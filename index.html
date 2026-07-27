@@ -916,6 +916,9 @@
 <script>
 var STORAGE_KEY = 'workbench_data_v2';
 var WORKSPACE_KEY = 'workbench_workspace_id';
+// 固定工作区 ID：所有设备打开同一链接即自动同步，无需分享链接
+// 如需独立工作区，可在链接后加 #ws=你自己的ID
+var DEFAULT_WORKSPACE = 'my-personal-workbench-v1';
 var MOOD_EMOJIS = {1:'😴',2:'😕',3:'😐',4:'😊',5:'🥳'};
 var SUPABASE_URL = 'https://fcpsjilfsugnkgcmwnhv.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjcHNqaWxmc3VnbmtnY213bmh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwOTc4MjIsImV4cCI6MjEwMDY3MzgyMn0.agq28E-kI1GC539Ampyz6kGKwHL6hAdN64ng6GYGHEM';
@@ -960,12 +963,11 @@ var App = {
       if (location.hash && location.hash.indexOf('ws=') >= 0) {
         hashWs = location.hash.split('ws=')[1].split('&')[0];
       }
-      var storedWs = localStorage.getItem(WORKSPACE_KEY);
-      this.state.workspaceId = hashWs || storedWs;
-      if (!this.state.workspaceId) this.state.workspaceId = this.generateId();
+      // 优先用链接指定的独立工作区；否则统一用固定默认工作区（多设备自动同步）
+      this.state.workspaceId = hashWs || DEFAULT_WORKSPACE;
       localStorage.setItem(WORKSPACE_KEY, this.state.workspaceId);
-      // 把当前工作区写回链接，方便复制给其它设备
-      try { if (location.hash !== '#ws=' + this.state.workspaceId) window.location.hash = 'ws=' + this.state.workspaceId; } catch(e) {}
+      // 仅当用户通过链接显式指定了独立工作区时，才写回链接方便分享
+      if (hashWs) { try { if (location.hash !== '#ws=' + this.state.workspaceId) window.location.hash = 'ws=' + this.state.workspaceId; } catch(e) {} }
       if (supabaseConfigured()) {
         this.state.supabaseReady = true;
         this.setSyncStatus('syncing');
@@ -1422,7 +1424,7 @@ var App = {
     var statusEl=document.getElementById('settings-cloud-status');
     if(this.state.supabaseReady&&this.state.workspaceId){
       statusEl.innerHTML='<span style="color:#4ECDC4;">🟢 云同步已连接</span>';
-      infoEl.innerHTML='已连接云端。<br>点上方「复制同步链接」，在另一台设备打开即可自动同步。<br><span style="font-size:11px;color:#90A4AE;">工作区：'+this.state.workspaceId+'</span>';
+      infoEl.innerHTML='已连接云端，所有设备打开同一链接会自动同步。<br><span style="font-size:11px;color:#90A4AE;">工作区：'+this.state.workspaceId+'</span>';
     }else if(SUPABASE_URL.indexOf('__')===0){
       statusEl.innerHTML='<span style="color:#FFD966;">🟡 云同步未配置</span>';
       infoEl.textContent='需要配置 Supabase 后方可使用多设备同步';
