@@ -197,7 +197,25 @@ body{padding-bottom:70px;}
 .tag-hot{background:#FDECEA;color:#E74C3C;}
 .tag-done{background:#E8F8F5;color:#27AE60;}
 
-/* ===== Growth Zone ===== */
+/* ===== Weekly Progress ===== */
+.progress-item{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #F5F6F7;}
+.progress-item:last-child{border-bottom:none;}
+.progress-date{font-size:12px;font-weight:600;color:#5BA8D6;min-width:64px;-webkit-flex-shrink:0;flex-shrink:0;}
+.progress-body{-webkit-flex:1;flex:1;min-width:0;}
+.progress-client{font-size:13px;font-weight:600;color:#2C3E50;}
+.progress-action{font-size:12px;color:#7F8C8D;margin-top:2px;line-height:1.4;}
+
+/* ===== Inspiration ===== */
+.inspiration-item{padding:12px;border-bottom:1px solid #F5F6F7;}
+.inspiration-item:last-child{border-bottom:none;}
+.insp-title{font-size:14px;font-weight:600;color:#2C3E50;}
+.insp-outline{font-size:12px;color:#7F8C8D;margin-top:6px;line-height:1.5;background:#F8FAFC;border-radius:6px;padding:8px;}
+.insp-meta{display:-webkit-flex;display:flex;gap:4px;margin-top:8px;-webkit-flex-wrap:wrap;flex-wrap:wrap;}
+
+/* ===== Account Cards ===== */
+.account-cards{display:-webkit-flex;display:flex;gap:10px;-webkit-overflow-scrolling:touch;overflow-x:auto;}
+.account-card{flex:1;min-width:130px;background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 2px 8px rgba(91,168,214,0.08);}
+
 .finance-card,.reading-card,.knowledge-card{margin-bottom:12px;}
 .book-cover{width:100%;height:80px;border-radius:8px;background:linear-gradient(135deg,#667eea,#764ba2);display:-webkit-flex;display:flex;
   -webkit-align-items:flex-end;align-items:flex-end;padding:10px;color:#fff;font-size:13px;font-weight:600;}
@@ -394,11 +412,26 @@ body{padding-bottom:70px;}
     <ul class="habit-list" id="today-habit-list"></ul>
   </div>
 
-  <!-- Key Clients -->
+  <!-- Key Clients & Weekly Progress -->
   <div class="card">
-    <div class="section-header">⭐ 重点客户</div>
+    <div class="section-header">⭐ 重点客户 & 每周进度</div>
     <div id="client-list"></div>
     <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="App.showAddClient()">+ 添加客户</button>
+  </div>
+
+  <!-- Weekly Progress Feed -->
+  <div class="card">
+    <div class="card-title">📅 客户跟进进度</div>
+    <div style="font-size:11px;color:#95A5A6;margin-bottom:8px;">记录每周推进动作，例如：7月27日 以色列客户 发报价</div>
+    <div id="progress-feed"></div>
+    <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="App.showAddProgress()">+ 添加进度记录</button>
+  </div>
+
+  <!-- Monthly Summary -->
+  <div class="card">
+    <div class="card-title">📊 月度总结 & 下月计划</div>
+    <div id="monthly-summary"></div>
+    <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="App.generateMonthlySummary()">生成本月总结与下月推进计划</button>
   </div>
 
   <!-- Closed Deals -->
@@ -415,27 +448,21 @@ body{padding-bottom:70px;}
 <!-- ============================================================ -->
 <div id="zone-media" class="zone">
 
-  <!-- Account Status -->
-  <div class="section-header">📊 账号状态</div>
+  <!-- Account Status (Weekly Followers) -->
+  <div class="section-header">📊 账号状态（每周更新）</div>
   <div class="account-cards" id="account-cards"></div>
 
-  <!-- Daily Data Entry -->
-  <div class="card">
-    <div class="card-title">📝 今日数据记录</div>
-    <div style="font-size:11px;color:#E74C3C;margin-bottom:8px;">⚠️ 小红书/B站无公开数据接口，请打开平台后台复制真实数字填入</div>
-    <div id="media-data-form"></div>
-    <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="App.saveMediaData()">保存今日真实数据</button>
-  </div>
-
-  <!-- Hot Topics & Topic Selection -->
+  <!-- Hot Topics & Topic Selection & Inspiration -->
   <div class="card">
     <div class="sub-tabs" id="media-sub-tabs">
-      <div class="sub-tab active" data-sub="hot" onclick="App.switchMediaSub('hot')">🔥 热点速报</div>
+      <div class="sub-tab active" data-sub="hot" onclick="App.switchMediaSub('hot')">🔥 每日热点</div>
       <div class="sub-tab" data-sub="topics" onclick="App.switchMediaSub('topics')">📋 选题表</div>
+      <div class="sub-tab" data-sub="inspiration" onclick="App.switchMediaSub('inspiration')">💡 灵感记录</div>
     </div>
     <div id="media-sub-hot">
       <div id="hot-report"></div>
       <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="App.generateHotReport()">生成今日热点速报</button>
+      <div style="font-size:11px;color:#95A5A6;margin-top:8px;">💡 含选题建议 + 各平台热点，进入本区自动生成</div>
     </div>
     <div id="media-sub-topics" style="display:none;">
       <table class="topic-table" id="topic-table">
@@ -444,30 +471,10 @@ body{padding-bottom:70px;}
       </table>
       <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="App.showAddTopic()">+ 添加选题</button>
     </div>
-  </div>
-
-  <!-- Data Visualization -->
-  <div class="card">
-    <div class="card-title">📈 近7天数据趋势</div>
-    <div class="sub-tabs" style="margin-bottom:10px;">
-      <div class="sub-tab active" data-chart="views" onclick="App.switchChart('views')">播放/阅读量</div>
-      <div class="sub-tab" data-chart="likes" onclick="App.switchChart('likes')">点赞数</div>
-      <div class="sub-tab" data-chart="followers" onclick="App.switchChart('followers')">粉丝增长</div>
+    <div id="media-sub-inspiration" style="display:none;">
+      <div id="inspiration-list"></div>
+      <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="App.showAddInspiration()">+ 记录灵感</button>
     </div>
-    <div class="chart-container" id="chart-container"></div>
-  </div>
-
-  <!-- Monthly Stats -->
-  <div class="card">
-    <div class="card-title">📅 本月数据汇总</div>
-    <div id="monthly-stats"></div>
-  </div>
-
-  <!-- Quarterly Report -->
-  <div class="card">
-    <div class="card-title">📊 季度报表</div>
-    <div id="quarterly-report"></div>
-    <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="App.generateQuarterlyReport()">生成本季报表</button>
   </div>
 
 </div><!-- end zone-media -->
@@ -686,10 +693,14 @@ var App={
     if(!d.media)d.media={accounts:[
       {id:'xiaohongshu',name:'小红书',handle:'小橘不懒惰🍊',platform:'小红书',icon:'🍊',totalFollowers:0},
       {id:'bilibili',name:'哔哩哔哩',handle:'小橘不懒惰',platform:'B站',icon:'📺',totalFollowers:0}
-    ],dailyData:{},hotTopics:{},topicSelections:{},monthlyStats:{},quarterlyReports:{}};
-    if(!d.work)d.work={keyClients:[],deals:[],salaryPlan:{income:0,fund:0,savings:0,other:0}};
+    ],hotTopics:{},topics:{},inspirations:[]};
+    if(!d.work)d.work={clients:[],progress:[],deals:[],monthlySummaries:{},salaryPlan:{income:0,fund:0,savings:0,other:0}};
     if(!d.growth)d.growth={finance:{notes:{},fundHotTopics:{}},reading:{books:[],chats:{}},knowledge:[]};
     if(!d.plan)d.plan={doneLog:{},fitness:{records:{}}};
+    // Migration: keyClients -> clients
+    if(d.work.keyClients&&d.work.keyClients.length>0&&(!d.work.clients||d.work.clients.length===0)){
+      d.work.clients=d.work.keyClients;
+    }
   },
   saveData:function(){
     localStorage.setItem(STORAGE_KEY,JSON.stringify(this.state.data));
@@ -764,7 +775,7 @@ var App={
     document.querySelectorAll('.zone-tab').forEach(function(t){t.classList.remove('active');});
     var tabs=document.querySelectorAll('.zone-tab[data-zone="'+zone+'"]');
     if(tabs.length>0)tabs[0].classList.add('active');
-    if(zone==='work'){this.renderToday();}
+    if(zone==='work'){this.renderToday();this.renderClients();this.renderProgress();this.renderMonthlySummary();this.renderDeals();}
     if(zone==='media'){this.renderMedia();}
     if(zone==='growth'){this.renderGrowth();}
     if(zone==='plan'){this.renderPlan();}
@@ -777,6 +788,8 @@ var App={
     try{this.renderNotes();}catch(e){console.log('renderNotes error:',e.message);}
     try{this.renderHabits();}catch(e){console.log('renderHabits error:',e.message);}
     try{this.renderClients();}catch(e){}
+    try{this.renderProgress();}catch(e){}
+    try{this.renderMonthlySummary();}catch(e){}
     try{this.renderDeals();}catch(e){}
   },
 
@@ -914,10 +927,11 @@ var App={
   // ---- Clients ----
   renderClients:function(){
     var list=document.getElementById('client-list');
-    var clients=this.state.data.work.keyClients||[];
+    var clients=this.state.data.work.clients||[];
     if(clients.length===0){list.innerHTML='<div class="empty-state"><div class="emoji">🤝</div><p>还没有重点客户<br>点击下方按钮添加</p></div>';return;}
     var html='';
     for(var i=0;i<clients.length;i++){var c=clients[i];
+      var progCount=(this.state.data.work.progress||[]).filter(function(p){return p.clientId===c.id;}).length;
       html+='<div class="client-item">'+
         '<div class="client-name">'+App.escape(c.name)+'</div>'+
         '<div class="client-detail">'+App.escape(c.company||'')+(c.company?' | ':'')+App.escape(c.contact||'')+(c.contact?' | ':'')+App.escape(c.phone||'')+'</div>'+
@@ -927,7 +941,10 @@ var App={
         if(c.tags[t]==='意向')tagCls+=' tag-warm';else if(c.tags[t]==='高意向')tagCls+=' tag-hot';else if(c.tags[t]==='成交')tagCls+=' tag-done';
         html+='<span class="'+tagCls+'">'+App.escape(c.tags[t])+'</span>';
       }
-      html+='</div></div>';
+      html+='<span class="client-tag">'+progCount+' 条进度</span>';
+      html+='</div>'+
+        '<button class="mini-btn" style="margin-top:6px;" onclick="App.showAddProgress(\''+c.id+'\')">+ 添加进度</button>'+
+        '</div>';
     }
     list.innerHTML=html;
   },
@@ -939,11 +956,119 @@ var App={
     var phone=prompt('电话（可选）：')||'';
     var tagsStr=prompt('标签（逗号分隔，如：意向,高意向）：')||'';
     var tags=tagsStr?tagsStr.split(',').map(function(s){return s.trim();}).filter(Boolean):[];
-    if(!this.state.data.work.keyClients)this.state.data.work.keyClients=[];
-    this.state.data.work.keyClients.push({id:Date.now(),name:name,company:company,contact:contact,phone:phone,tags:tags,addedAt:new Date().toISOString()});
+    if(!this.state.data.work.clients)this.state.data.work.clients=[];
+    this.state.data.work.clients.push({id:Date.now(),name:name,company:company,contact:contact,phone:phone,tags:tags,addedAt:new Date().toISOString()});
     this.saveData();
     this.renderClients();
     this.showToast('客户已添加');
+  },
+
+  // ---- Weekly Progress ----
+  renderProgress:function(){
+    var feed=document.getElementById('progress-feed');
+    if(!feed)return;
+    var progress=this.state.data.work.progress||[];
+    if(progress.length===0){feed.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:16px;font-size:13px;">还没有进度记录，点击下方添加</div>';return;}
+    // Sort by date desc
+    var sorted=progress.slice().sort(function(a,b){return a.date<b.date?1:-1;});
+    var html='';
+    for(var i=0;i<sorted.length;i++){var p=sorted[i];
+      var statusCls=p.status==='已完成'?'tag-done':p.status==='进行中'?'tag-warm':'tag-hot';
+      html+='<div class="progress-item">'+
+        '<div class="progress-date">'+App.escape(p.date)+'</div>'+
+        '<div class="progress-body"><div class="progress-client">'+App.escape(p.clientName)+'</div>'+
+        '<div class="progress-action">'+App.escape(p.action)+'</div></div>'+
+        '<span class="client-tag '+statusCls+'">'+App.escape(p.status||'待跟进')+'</span>'+
+        '<button class="mini-btn" style="margin-left:4px;" onclick="App.deleteProgress('+p.id+')">✕</button>'+
+        '</div>';
+    }
+    feed.innerHTML=html;
+  },
+  showAddProgress:function(clientId){
+    var clients=this.state.data.work.clients||[];
+    var clientName='';
+    if(clientId){
+      var c=clients.filter(function(x){return x.id===clientId;})[0];
+      if(c)clientName=c.name;
+    }
+    if(!clientName){
+      var opts='';
+      for(var i=0;i<clients.length;i++){opts+=(i+1)+'. '+clients[i].name+'\n';}
+      var pick=prompt('选择客户（输入序号）：\n'+opts);
+      if(!pick)return;
+      var idx=parseInt(pick)-1;
+      if(isNaN(idx)||!clients[idx])return;
+      clientId=clients[idx].id;clientName=clients[idx].name;
+    }
+    var date=prompt('日期（如 7月27日 或 '+this.state.currentDate+'）：',this.state.currentDate);
+    if(!date)return;
+    var action=prompt('跟进动作（如：发报价 / 做PI / 寄样品）：');
+    if(!action)return;
+    var status=prompt('状态（待跟进/进行中/已完成）：','待跟进')||'待跟进';
+    if(!this.state.data.work.progress)this.state.data.work.progress=[];
+    this.state.data.work.progress.push({id:Date.now(),clientId:clientId,clientName:clientName,date:date,action:action,status:status});
+    this.saveData();
+    this.renderProgress();
+    this.renderClients();
+    this.showToast('进度已记录');
+  },
+  deleteProgress:function(id){
+    if(!confirm('确定删除这条进度记录？'))return;
+    this.state.data.work.progress=this.state.data.work.progress.filter(function(p){return p.id!==id;});
+    this.saveData();
+    this.renderProgress();
+    this.renderClients();
+  },
+
+  // ---- Monthly Summary & Next Month Plan ----
+  renderMonthlySummary:function(){
+    var el=document.getElementById('monthly-summary');
+    if(!el)return;
+    var now=new Date();
+    var monthKey=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    var ms=this.state.data.work.monthlySummaries?this.state.data.work.monthlySummaries[monthKey]:null;
+    if(ms){el.innerHTML='<pre style="font-size:12px;line-height:1.6;white-space:pre-wrap;">'+App.escape(ms.content)+'</pre>';}
+    else{el.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:16px;font-size:13px;">本月总结尚未生成</div>';}
+  },
+  generateMonthlySummary:function(){
+    var now=new Date();
+    var monthKey=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    var progress=this.state.data.work.progress||[];
+    var monthProgress=progress.filter(function(p){return (p.date||'').indexOf((now.getMonth()+1)+'月')>=0||(p.date||'').indexOf(monthKey)>=0;});
+    var clients=this.state.data.work.clients||[];
+    var deals=this.state.data.work.deals||[];
+
+    var content='═══ '+now.getFullYear()+'年'+(now.getMonth()+1)+'月 客户跟进总结 ═══\n\n';
+    content+='👥 重点客户（'+clients.length+'个）：\n';
+    clients.forEach(function(c){content+='  • '+c.name+(c.company?('（'+c.company+'）'):'')+'\n';});
+
+    content+='\n📅 本月跟进动作（'+monthProgress.length+'条）：\n';
+    if(monthProgress.length>0){
+      monthProgress.slice().sort(function(a,b){return a.date<b.date?1:-1;}).forEach(function(p){
+        content+='  ['+p.date+'] '+p.clientName+'：'+p.action+'（'+p.status+'）\n';
+      });
+    }else{content+='  （暂无本月记录）\n';}
+
+    // Next month plan
+    var next=new Date(now.getFullYear(),now.getMonth()+1,1);
+    content+='\n🎯 '+next.getFullYear()+'年'+(next.getMonth()+1)+'月 推进成交计划\n';
+    var pending=progress.filter(function(p){return p.status!=='已完成';});
+    if(pending.length>0){
+      pending.forEach(function(p){
+        content+='  • '+p.clientName+'：继续推进「'+p.action+'」，目标本月内完成签约\n';
+      });
+    }
+    clients.forEach(function(c){
+      var has=progress.some(function(p){return p.clientId===c.id;});
+      if(!has)content+='  • '+c.name+'：本月尚未跟进，计划安排首次联系+报价\n';
+    });
+    if(pending.length===0&&clients.length===0)content+='  （添加客户和进度后自动生成）\n';
+
+    if(!this.state.data.work.monthlySummaries)this.state.data.work.monthlySummaries={};
+    this.state.data.work.monthlySummaries[monthKey]={content:content,generatedAt:new Date().toISOString()};
+    this.saveData();
+    this.renderMonthlySummary();
+    this.showToast('月度总结已生成');
   },
 
   // ---- Deals ----
@@ -978,62 +1103,10 @@ var App={
   // ================================================================
   renderMedia:function(){
     this.renderAccountCards();
-    this.renderMediaDataForm();
     this.autoGenerateHotReport();
     this.renderHotReport();
     this.renderTopicTable();
-    this.renderChart();
-    this.renderMonthlyStats();
-    this.renderQuarterlyReport();
-  },
-
-  // ---- Auto-fill daily media data (simulated sync) ----
-  autoFillMediaData:function(){
-    var accounts=this.state.data.media.accounts||[];
-    if(accounts.length===0)return;
-    var todayKey=this.state.currentDate;
-    var dailyData=this.state.data.media.dailyData;
-    if(!dailyData)dailyData=this.state.data.media.dailyData={};
-    // Skip if already has data for today
-    if(dailyData[todayKey]&&Object.keys(dailyData[todayKey]).length>0)return;
-
-    // Analyze last 7 days to build trend baseline
-    var days=[];var d=new Date();
-    for(var back=1;back<=7;back++){var dd=new Date(d);dd.setDate(dd.getDate()-back);days.push(this.dateKey(dd));}
-    var baselines={};
-    accounts.forEach(function(a){baselines[a.id]={views:0,likes:0,comments:0,followers:0,count:0};});
-    for(var di=0;di<days.length;di++){
-      var dayD=dailyData[days[di]];
-      if(dayD){accounts.forEach(function(a){
-        var v=dayD[a.id];if(v){baselines[a.id].views+=v.views||0;baselines[a.id].likes+=v.likes||0;
-          baselines[a.id].comments+=v.comments||0;baselines[a.id].followers+=v.followers||0;baselines[a.id].count++;}
-      });}
-    }
-
-    // Generate today's simulated data with random variation (+/-30%)
-    var todayData={};
-    accounts.forEach(function(a){
-      var bl=baselines[a.id];
-      var avgViews=bl.count>0?Math.round(bl.views/bl.count):0;
-      var avgLikes=bl.count>0?Math.round(bl.likes/bl.count):0;
-      var avgComments=bl.count>0?Math.round(bl.comments/bl.count):0;
-      var avgFollowers=bl.count>0?Math.round(bl.followers/bl.count):0;
-      // Use defaults for first time
-      if(avgViews===0){avgViews=a.id==='xiaohongshu'?800+Math.floor(Math.random()*1500):300+Math.floor(Math.random()*800);}
-      if(avgLikes===0){avgLikes=a.id==='xiaohongshu'?50+Math.floor(Math.random()*120):20+Math.floor(Math.random()*60);}
-      if(avgComments===0){avgComments=a.id==='xiaohongshu'?8+Math.floor(Math.random()*20):3+Math.floor(Math.random()*10);}
-      if(avgFollowers===0){avgFollowers=a.id==='xiaohongshu'?5+Math.floor(Math.random()*15):2+Math.floor(Math.random()*8);}
-      // Random variation
-      var factor=0.7+Math.random()*0.6; // 0.7 ~ 1.3
-      todayData[a.id]={
-        views:Math.round(avgViews*factor),
-        likes:Math.round(avgLikes*factor),
-        comments:Math.round(avgComments*factor),
-        followers:Math.round(avgFollowers*factor)
-      };
-    });
-    dailyData[todayKey]=todayData;
-    this.saveData();
+    this.renderInspirations();
   },
 
   // ---- Auto-generate hot report on zone entry ----
@@ -1048,21 +1121,16 @@ var App={
   renderAccountCards:function(){
     var container=document.getElementById('account-cards');
     var accounts=this.state.data.media.accounts||[];
-    var todayData=this.state.data.media.dailyData[this.state.currentDate]||{};
     var html='';
     for(var i=0;i<accounts.length;i++){var a=accounts[i];
-      var ad=todayData[a.id]||{};
-      var hasData=ad&&(ad.views>0||ad.likes>0);
       var totalF=a.totalFollowers||0;
-      var newF=ad.followers||0;
       html+='<div class="account-card">'+
         '<div class="account-icon">'+(a.icon||'📱')+'</div>'+
         '<div class="account-name">'+App.escape(a.name)+'</div>'+
         '<div class="account-handle">'+App.escape(a.handle)+'</div>'+
         '<div style="margin:8px 0 4px;font-size:11px;color:#95A5A6;">当前总粉丝</div>'+
         '<div style="font-size:22px;font-weight:700;color:#2C3E50;">'+App.formatNum(totalF)+'</div>'+
-        (newF>0?'<div style="font-size:11px;color:#27AE60;margin-top:2px;">今日 +'+App.formatNum(newF)+'</div>':'')+
-        '<button class="mini-btn" style="margin-top:6px;" onclick="App.setTotalFollowers(\''+a.id+'\')">设置总粉丝数</button>'+
+        '<button class="mini-btn" style="margin-top:6px;" onclick="App.setTotalFollowers(\''+a.id+'\')">更新本周粉丝数</button>'+
         '</div>';
     }
     container.innerHTML=html;
@@ -1071,50 +1139,12 @@ var App={
   setTotalFollowers:function(accId){
     var acc=this.state.data.media.accounts.filter(function(a){return a.id===accId;})[0];
     if(!acc)return;
-    var val=prompt('设置【'+acc.name+'】当前真实总粉丝数：\n（请从平台后台复制真实数字填写）',acc.totalFollowers||'');
+    var val=prompt('更新【'+acc.name+'】本周总粉丝数：\n（请从平台后台复制真实数字填写）',acc.totalFollowers||'');
     if(val===null)return;
     acc.totalFollowers=parseInt(val.replace(/[^\d]/g,''))||0;
     this.saveData();
     this.renderAccountCards();
-    this.renderMonthlyStats();
-    this.showToast('已更新总粉丝数');
-  },
-
-  renderMediaDataForm:function(){
-    var form=document.getElementById('media-data-form');
-    var accounts=this.state.data.media.accounts||[];
-    var todayData=this.state.data.media.dailyData[this.state.currentDate]||{};
-    var html='<div style="background:rgba(91,168,214,0.08);border-radius:8px;padding:8px 10px;font-size:11px;color:#5BA8D6;margin-bottom:10px;">💡 打开平台后台，复制今天的真实数据填入下方（播放量/点赞/评论/新增粉丝）</div>';
-    for(var i=0;i<accounts.length;i++){var a=accounts[i];
-      var ad=todayData[a.id]||{};
-      html+='<div style="margin-bottom:12px;"><div style="font-weight:600;font-size:13px;margin-bottom:6px;">'+(a.icon||'📱')+' '+App.escape(a.name)+'</div>'+
-        '<div class="data-entry-row">'+
-        '<div style="flex:1;"><div class="data-label">播放/阅读</div><input class="data-input" id="md_'+a.id+'_views" value="'+(ad.views||'')+'" placeholder="0" inputmode="numeric"></div>'+
-        '<div style="flex:1;"><div class="data-label">点赞</div><input class="data-input" id="md_'+a.id+'_likes" value="'+(ad.likes||'')+'" placeholder="0" inputmode="numeric"></div>'+
-        '<div style="flex:1;"><div class="data-label">评论</div><input class="data-input" id="md_'+a.id+'_comments" value="'+(ad.comments||'')+'" placeholder="0" inputmode="numeric"></div>'+
-        '<div style="flex:1;"><div class="data-label">新增粉丝</div><input class="data-input" id="md_'+a.id+'_followers" value="'+(ad.followers||'')+'" placeholder="0" inputmode="numeric"></div>'+
-        '</div></div>';
-    }
-    form.innerHTML=html;
-  },
-
-  saveMediaData:function(){
-    var accounts=this.state.data.media.accounts||[];
-    if(!this.state.data.media.dailyData)this.state.data.media.dailyData={};
-    var todayData=this.state.data.media.dailyData[this.state.currentDate]={};
-    for(var i=0;i<accounts.length;i++){var a=accounts[i];
-      todayData[a.id]={
-        views:parseInt(document.getElementById('md_'+a.id+'_views').value)||0,
-        likes:parseInt(document.getElementById('md_'+a.id+'_likes').value)||0,
-        comments:parseInt(document.getElementById('md_'+a.id+'_comments').value)||0,
-        followers:parseInt(document.getElementById('md_'+a.id+'_followers').value)||0
-      };
-    }
-    this.saveData();
-    this.renderAccountCards();
-    this.renderChart();
-    this.renderMonthlyStats();
-    this.showToast('数据已保存');
+    this.showToast('已更新粉丝数');
   },
 
   switchMediaSub:function(sub){
@@ -1124,6 +1154,7 @@ var App={
     if(el)el.classList.add('active');
     document.getElementById('media-sub-hot').style.display=sub==='hot'?'block':'none';
     document.getElementById('media-sub-topics').style.display=sub==='topics'?'block':'none';
+    document.getElementById('media-sub-inspiration').style.display=sub==='inspiration'?'block':'none';
   },
 
   generateHotReport:function(silent){
@@ -1182,7 +1213,7 @@ var App={
 
   renderTopicTable:function(){
     var tbody=document.getElementById('topic-tbody');
-    var selections=this.state.data.topicSelections?this.state.data.topicSelections[this.state.currentDate]:null;
+    var selections=this.state.data.topics?this.state.data.topics[this.state.currentDate]:null;
     if(selections&&selections.length>0){
       var html='';
       for(var i=0;i<selections.length;i++){var s=selections[i];
@@ -1198,139 +1229,54 @@ var App={
     if(!topic)return;
     var platform=prompt('目标平台（小红书/B站/双平台）：')||'小红书';
     var type=prompt('类型（生活vlog/教程/资讯/深度等）：')||'生活vlog';
-    if(!this.state.data.topicSelections)this.state.data.topicSelections={};
-    if(!this.state.data.topicSelections[this.state.currentDate])this.state.data.topicSelections[this.state.currentDate]=[];
-    this.state.data.topicSelections[this.state.currentDate].push({id:Date.now(),topic:topic,platform:platform,type:type,status:'待定'});
+    if(!this.state.data.topics)this.state.data.topics={};
+    if(!this.state.data.topics[this.state.currentDate])this.state.data.topics[this.state.currentDate]=[];
+    this.state.data.topics[this.state.currentDate].push({id:Date.now(),topic:topic,platform:platform,type:type,status:'待定'});
     this.saveData();
     this.renderTopicTable();
     this.showToast('选题已添加');
   },
 
-  switchChart:function(metric){
-    this.state.chartMetric=metric;
-    document.querySelectorAll('[data-chart]').forEach(function(t){t.classList.remove('active');});
-    var el=document.querySelector('[data-chart="'+metric+'"]');
-    if(el)el.classList.add('active');
-    this.renderChart();
-  },
-
-  renderChart:function(){
-    var container=document.getElementById('chart-container');
-    var metric=this.state.chartMetric;
-    var accounts=this.state.data.media.accounts||[];
-    if(accounts.length===0){container.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:20px;font-size:13px;">暂无数据</div>';return;}
-
-    var days=[];var d=new Date();
-    for(var back=6;back>=0;back--){var dd=new Date(d);dd.setDate(dd.getDate()-back);days.push(this.dateKey(dd));}
-
-    // Use first account for demo, or aggregate
-    var accId=accounts[0].id;
-    var values=[];
-    for(var di=0;di<days.length;di++){
-      var dayData=this.state.data.media.dailyData[days[di]];
-      var val=dayData&&dayData[accId]?dayData[accId][metric]||0:0;
-      values.push(val);
+  // ---- Inspiration Records ----
+  renderInspirations:function(){
+    var list=document.getElementById('inspiration-list');
+    if(!list)return;
+    var items=this.state.data.media.inspirations||[];
+    if(items.length===0){list.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:16px;font-size:13px;">还没有灵感记录，点击下方添加</div>';return;}
+    var sorted=items.slice().sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0);});
+    var html='';
+    for(var i=0;i<sorted.length;i++){var it=sorted[i];
+      html+='<div class="inspiration-item">'+
+        '<div class="insp-title">'+App.escape(it.title)+'</div>'+
+        (it.outline?'<div class="insp-outline">'+App.escape(it.outline).replace(/\n/g,'<br>')+'</div>':'')+
+        '<div class="insp-meta">'+
+        '<span class="client-tag">📅 '+(it.planDate||'未定')+'</span>'+
+        '<span class="client-tag">'+App.escape(it.platform||'')+'</span>'+
+        '<span class="client-tag '+(it.status==='已发布'?'tag-done':it.status==='制作中'?'tag-warm':'tag-hot')+'">'+App.escape(it.status||'灵感')+'</span>'+
+        '</div>'+
+        '<button class="mini-btn" style="margin-top:4px;" onclick="App.deleteInspiration('+it.id+')">✕ 删除</button>'+
+        '</div>';
     }
-
-    var maxVal=Math.max.apply(null,values.concat([1]));
-    var colors=['bar-blue','bar-green','bar-orange','bar-red'];
-    var html='<div class="bar-chart">';
-    for(var vi=0;vi<values.length;vi++){
-      var pct=Math.round(values[vi]/maxVal*100);
-      var cls=colors[vi%colors.length];
-      var dayLabel=days[vi].substring(5).replace('-','/');
-      html+='<div class="bar-col"><div class="bar '+cls+'" style="height:'+Math.max(pct,3)+'%;"></div>'+
-        '<span class="bar-val">'+(values[vi]>0?values[vi]:'')+'</span><span class="bar-day">'+dayLabel+'</span></div>';
-    }
-    html+='</div>';
-    container.innerHTML=html;
+    list.innerHTML=html;
   },
-
-  renderMonthlyStats:function(){
-    var el=document.getElementById('monthly-stats');
-    var now=new Date();
-    var monthKey=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-    var accounts=this.state.data.media.accounts||[];
-    var totals={views:0,likes:0,comments:0,followers:0,newFollowers:0,posts:0};
-
-    // Sum up daily data for current month
-    var dailyData=this.state.data.media.dailyData||{};
-    Object.keys(dailyData).forEach(function(key){
-      if(key.indexOf(monthKey)===0){
-        accounts.forEach(function(a){
-          var d=dailyData[key][a.id];
-          if(d){totals.views+=d.views||0;totals.likes+=d.likes||0;totals.comments+=d.comments||0;totals.newFollowers+=d.followers||0;totals.posts++;}
-        });
-      }
-    });
-
-    // Total followers = base + sum of new followers this month
-    var totalFollowers=0;
-    accounts.forEach(function(a){totalFollowers+=(a.totalFollowers||0);});
-    totalFollowers+=totals.newFollowers;
-
-    el.innerHTML='<table class="topic-table"><tbody>'+
-      '<tr><td>当前总粉丝</td><td><b>'+App.formatNum(totalFollowers)+'</b></td><td>本月新增</td><td><b>+'+App.formatNum(totals.newFollowers)+'</b></td></tr>'+
-      '<tr><td>总播放/阅读</td><td><b>'+App.formatNum(totals.views)+'</b></td><td>总点赞</td><td><b>'+App.formatNum(totals.likes)+'</b></td></tr>'+
-      '<tr><td>总评论</td><td><b>'+App.formatNum(totals.comments)+'</b></td><td>更新天数</td><td><b>'+totals.posts+' 天</b></td></tr>'+
-      '<tr><td>日均播放</td><td><b>'+App.formatNum(Math.round(totals.views/Math.max(totals.posts,1)))+'</b></td><td>日均互动</td><td><b>'+App.formatNum(Math.round((totals.likes+totals.comments)/Math.max(totals.posts,1)))+'</b></td></tr>'+
-      '</tbody></table>';
-  },
-
-  renderQuarterlyReport:function(){
-    var el=document.getElementById('quarterly-report');
-    var qr=this.state.data.quarterlyReports?this.state.data.quarterlyReports[this.getCurrentQuarter()]:null;
-    if(qr){
-      el.innerHTML='<pre style="font-size:12px;line-height:1.6;white-space:pre-wrap;">'+App.escape(qr.content)+'</pre>';
-    }else{el.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:16px;font-size:13px;">本季报表尚未生成</div>';}
-  },
-
-  generateQuarterlyReport:function(){
-    var q=this.getCurrentQuarter();
-    var accounts=this.state.data.media.accounts||[];
-    var content='═══ '+q+' 季度运营报表 ═══\n\n';
-    content+='📊 账号概览\n';
-    accounts.forEach(function(a){content+='  • '+a.name+'('+a.handle+')\n';});
-
-    var dailyData=this.state.data.media.dailyData||{};
-    var qTotals={views:0,likes:0,comments:0,followers:0,posts:0};
-    var qPrefix=q.substring(0,7);
-    Object.keys(dailyData).forEach(function(key){
-      if(key.indexOf(qPrefix)===0){
-        accounts.forEach(function(a){
-          var d=dailyData[key][a.id];if(d){qTotals.views+=d.views||0;qTotals.likes+=d.likes||0;qTotals.comments+=d.comments||0;qTotals.followers+=d.followers||0;qTotals.posts++;}
-        });
-      }
-    });
-
-    var totalFollowers=0;
-    accounts.forEach(function(a){totalFollowers+=(a.totalFollowers||0);});
-    totalFollowers+=qTotals.followers;
-
-    content+='\n📈 数据汇总\n';
-    content+='  当前总粉丝：'+App.formatNum(totalFollowers)+'\n';
-    content+='  总播放/阅读：'+App.formatNum(qTotals.views)+'\n';
-    content+='  总点赞：'+App.formatNum(qTotals.likes)+'\n';
-    content+='  总评论：'+App.formatNum(qTotals.comments)+'\n';
-    content+='  新增粉丝：'+App.formatNum(qTotals.followers)+'\n';
-    content+='  更新天数：'+qTotals.posts+' 天\n';
-    content+='  日均互动：'+App.formatNum(Math.round((qTotals.likes+qTotals.comments)/Math.max(qTotals.posts,1)))+'\n';
-
-    content+='\n💡 下季度建议\n';
-    content+='  （根据数据趋势填写具体建议）\n';
-
-    if(!this.state.data.quarterlyReports)this.state.data.quarterlyReports={};
-    this.state.data.quarterlyReports[q]={content:content,generatedAt:new Date().toISOString()};
+  showAddInspiration:function(){
+    var title=prompt('选题主题：');
+    if(!title)return;
+    var outline=prompt('大纲（可多行，用 / 分隔要点）：')||'';
+    var planDate=prompt('计划发布时间（如：8月5日 或 2026/08/05）：')||'未定';
+    var platform=prompt('目标平台（小红书/B站/双平台）：')||'小红书';
+    var status=prompt('状态（灵感/制作中/已发布）：','灵感')||'灵感';
+    if(!this.state.data.media.inspirations)this.state.data.media.inspirations=[];
+    this.state.data.media.inspirations.push({id:Date.now(),title:title,outline:outline,planDate:planDate,platform:platform,status:status,createdAt:Date.now()});
     this.saveData();
-    this.renderQuarterlyReport();
-    this.showToast('季度报表已生成');
+    this.renderInspirations();
+    this.showToast('灵感已记录');
   },
-
-  getCurrentQuarter:function(){
-    var now=new Date();
-    var m=now.getMonth()+1;
-    var q=Math.ceil(m/3);
-    return now.getFullYear()+'-Q'+q;
+  deleteInspiration:function(id){
+    if(!confirm('确定删除这条灵感？'))return;
+    this.state.data.media.inspirations=this.state.data.media.inspirations.filter(function(x){return x.id!==id;});
+    this.saveData();
+    this.renderInspirations();
   },
 
   // ================================================================
