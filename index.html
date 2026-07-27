@@ -795,11 +795,23 @@ var App={
     this.state.data.version=(this.state.data.version||0)+1;
     var payload={workspace_id:self.state.workspaceId,data:this.state.data,
       version:this.state.data.version,updated_at:new Date().toISOString()};
-    return fetch(SUPABASE_URL+'/rest/v1/workbench_data',{method:'POST',headers:Object.assign({},HEADERS,{'Prefer':'resolution=merge-duplicates'}),
-      body:JSON.stringify(payload)}).then(function(r){
+    // Use POST with return=representation (upsert via merge-duplicates)
+    // If 409 conflict, fall back to DELETE+INSERT
+    var bodyStr=JSON.stringify(payload);
+    return fetch(SUPABASE_URL+'/rest/v1/workbench_data',{method:'POST',headers:Object.assign({},HEADERS,{'Content-Type':'application/json','Prefer':'return=representation,resolution=merge-duplicates'}),
+      body:bodyStr}).then(function(r){
+      if(r.status===409){
+        // Row exists and merge-duplicates failed, use DELETE+INSERT fallback
+        return fetch(SUPABASE_URL+'/rest/v1/workbench_data?workspace_id=eq.'+encodeURIComponent(self.state.workspaceId),
+          {method:'DELETE',headers:HEADERS}).then(function(){
+          return fetch(SUPABASE_URL+'/rest/v1/workbench_data',{method:'POST',headers:Object.assign({},HEADERS,{'Content-Type':'application/json','Prefer':'return=representation'}),body:bodyStr});
+        });
+      }
       if(!r.ok)throw new Error('HTTP '+r.status);
-      localStorage.setItem(STORAGE_KEY,JSON.stringify(self.state.data));
-      self.setSyncStatus('synced');
+      return r;
+    }).then(function(r){
+      if(r&&r.ok){localStorage.setItem(STORAGE_KEY,JSON.stringify(self.state.data));self.setSyncStatus('synced');}
+      else if(r)throw new Error('HTTP '+r.status);
     }).catch(function(e){console.log('Cloud save error:',e.message);self.setSyncStatus('error');})
     .then(function(){self._cloudSaving=false;});
   },
