@@ -186,16 +186,39 @@ body{padding-bottom:70px;}
 .bar-val{font-size:9px;color:#7F8C8D;}
 .bar-day{font-size:9px;color:#B0BEC5;}
 
-/* ===== Work Zone - Clients ===== */
-.client-item{padding:12px;border-bottom:1px solid #F5F6F7;}
-.client-item:last-child{border-bottom:none;}
+/* ===== Work Zone - Clients (Unified) ===== */
+.client-card{background:#FAFBFC;border-radius:10px;margin-bottom:8px;border:1px solid #E8ECF0;overflow:hidden;}
+.client-card-head{padding:12px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;cursor:pointer;transition:background .15s;}
+.client-card-head:active{background:#F0F4F8;}
+.client-card-expand{width:22px;height:22px;border-radius:50%;background:#EBF5FB;color:#5BA8D6;font-size:12px;
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;
+  flex-shrink:0;transition:transform .2s;font-weight:700;}
+.client-card-expand.open{transform:rotate(90deg);}
+.client-card-info{flex:1;min-width:0;}
 .client-name{font-size:14px;font-weight:600;color:#2C3E50;}
-.client-detail{font-size:12px;color:#7F8C8D;margin-top:4px;line-height:1.5;}
-.client-tags{display:-webkit-flex;display:flex;gap:4px;margin-top:6px;-webkit-flex-wrap:wrap;flex-wrap:wrap;}
-.client-tag{font-size:10px;padding:2px 8px;border-radius:10px;background:#EBF5FB;color:#2980B9;}
+.client-detail{font-size:11px;color:#95A5A6;margin-top:3px;line-height:1.4;}
+.client-tags{display:-webkit-flex;display:flex;gap:4px;margin-top:5px;-webkit-flex-wrap:wrap;flex-wrap:wrap;}
+.client-tag{font-size:10px;padding:1px 7px;border-radius:10px;background:#EBF5FB;color:#2980B9;}
 .tag-warm{background:#FEF5E7;color:#E67E22;}
 .tag-hot{background:#FDECEA;color:#E74C3C;}
 .tag-done{background:#E8F8F5;color:#27AE60;}
+.client-latest{font-size:11px;color:#7F8C8D;margin-top:4px;padding-left:2px;}
+.client-latest b{color:#5BA8D6;}
+.client-actions{display:-webkit-flex;display:flex;gap:4px;flex-shrink:0;-webkit-flex-wrap:wrap;flex-wrap:wrap;}
+.mini-btn{font-size:11px;padding:3px 8px;border-radius:6px;border:1.5px solid #E8ECF0;background:#fff;color:#5BA8D6;cursor:pointer;white-space:nowrap;}
+.mini-btn:active{background:#F0F6FF;}
+.mini-btn.del{color:#E74C3C;border-color:#FADBD8;}
+.mini-btn.del:active{background:#FDECEA;}
+/* Progress timeline inside client card */
+.client-timeline{display:none;padding:0 12px 10px 34px;border-top:1px solid #E8ECF0;background:#FAFBFC;}
+.client-timeline.show{display:block;}
+.timeline-item{padding:8px 0;border-bottom:1px dashed #E8ECF0;display:-webkit-flex;display:flex;gap:8px;-webkit-align-items:center;align-items:center;}
+.timeline-item:last-child{border-bottom:none;}
+.timeline-dot{width:8px;height:8px;border-radius:50%;background:#5BA8D6;flex-shrink:0;margin-top:1px;}
+.timeline-body{flex:1;min-width:0;}
+.timeline-date{font-size:11px;font-weight:600;color:#5BA8D6;}
+.timeline-action{font-size:12px;color:#555;margin-top:1px;line-height:1.4;}
+.timeline-status{font-size:10px;padding:1px 6px;border-radius:8px;flex-shrink:0;}
 
 /* ===== Weekly Progress ===== */
 .progress-item{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #F5F6F7;}
@@ -428,19 +451,12 @@ body{padding-bottom:70px;}
     <ul class="habit-list" id="today-habit-list"></ul>
   </div>
 
-  <!-- Key Clients & Weekly Progress -->
+  <!-- 外贸客户管理（合并：客户列表 + 跟进进度） -->
   <div class="card">
-    <div class="section-header">⭐ 重点客户 & 每周进度</div>
+    <div class="section-header">🤝 外贸客户管理</div>
     <div id="client-list"></div>
     <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="App.showAddClient()">+ 添加客户</button>
-  </div>
-
-  <!-- Weekly Progress Feed -->
-  <div class="card">
-    <div class="card-title">📅 客户跟进进度</div>
-    <div style="font-size:11px;color:#95A5A6;margin-bottom:8px;">记录每周推进动作，例如：7月27日 以色列客户 发报价</div>
-    <div id="progress-feed"></div>
-    <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="App.showAddProgress()">+ 添加进度记录</button>
+    <button class="btn btn-outline btn-sm" style="margin-top:10px;margin-left:6px;" onclick="App.showAddProgress()">+ 添加跟进记录</button>
   </div>
 
   <!-- Monthly Summary -->
@@ -945,31 +961,93 @@ var App={
   renderNotes:function(){},
   renderTasks:function(){},
 
-  // ---- Clients ----
+  // ---- Clients (Unified with Progress Timeline) ----
   renderClients:function(){
     var list=document.getElementById('client-list');
     var clients=this.state.data.work.clients||[];
-    if(clients.length===0){list.innerHTML='<div class="empty-state"><div class="emoji">🤝</div><p>还没有重点客户<br>点击下方按钮添加</p></div>';return;}
+    var allProgress=this.state.data.work.progress||[];
+    if(clients.length===0){list.innerHTML='<div class="empty-state"><div class="emoji">🤝</div><p>还没有客户<br>点击下方按钮添加</p></div>';return;}
     var html='';
     for(var i=0;i<clients.length;i++){var c=clients[i];
-      var progCount=(this.state.data.work.progress||[]).filter(function(p){return p.clientId===c.id;}).length;
-      html+='<div class="client-item">'+
-        '<div class="client-name">'+App.escape(c.name)+'</div>'+
-        '<div class="client-detail">'+App.escape(c.company||'')+(c.company?' | ':'')+App.escape(c.contact||'')+(c.contact?' | ':'')+App.escape(c.phone||'')+'</div>'+
-        '<div class="client-tags">';
-      if(c.tags)for(var t=0;t<c.tags.length;t++){
-        var tagCls='client-tag';
-        if(c.tags[t]==='意向')tagCls+=' tag-warm';else if(c.tags[t]==='高意向')tagCls+=' tag-hot';else if(c.tags[t]==='成交')tagCls+=' tag-done';
-        html+='<span class="'+tagCls+'">'+App.escape(c.tags[t])+'</span>';
+      // Get progress for this client
+      var clientProg=allProgress.filter(function(p){return p.clientId===String(c.id)||p.clientId===c.id;});
+      var progCount=clientProg.length;
+      // Latest progress
+      var latestHtml='';
+      if(progCount>0){
+        var sorted=clientProg.slice().sort(function(a,b){return a.date<b.date?1:-1;});
+        var lp=sorted[0];
+        var sCls=lp.status==='已完成'?'tag-done':lp.status==='进行中'?'tag-warm':'tag-hot';
+        latestHtml='<div class="client-latest">最新：<b>'+App.escape(lp.date)+'</b> '+App.escape(lp.action)+' <span class="client-tag '+sCls+'">'+App.escape(lp.status||'待跟进')+'</span></div>';
+      }else{
+        latestHtml='<div class="client-latest" style="color:#B0BEC5;">暂无跟进记录</div>';
       }
-      html+='<span class="client-tag">'+progCount+' 条进度</span>';
-      html+='</div>'+
-        '<div style="margin-top:6px;display:-webkit-flex;display:flex;gap:8px;">'+
+      // Build timeline HTML
+      var timelineHtml='';
+      if(progCount>0){
+        var tSorted=clientProg.slice().sort(function(a,b){return a.date<b.date?1:-1;});
+        timelineHtml='<div class="client-timeline" id="timeline-'+c.id+'">';
+        for(var j=0;j<tSorted.length;j++){var p=tSorted[j];
+          var tsCls=p.status==='已完成'?'tag-done':p.status==='进行中'?'tag-warm':'tag-hot';
+          timelineHtml+='<div class="timeline-item">'+
+            '<div class="timeline-dot"></div>'+
+            '<div class="timeline-body"><div class="timeline-date">'+App.escape(p.date)+'</div><div class="timeline-action">'+App.escape(p.action)+'</div></div>'+
+            '<span class="timeline-status '+tsCls+'">'+App.escape(p.status||'待跟进')+'</span>'+
+            '<button class="mini-btn del" style="margin-left:4px;font-size:10px;padding:2px 5px;" onclick="event.stopPropagation();App.deleteProgress('+p.id+')">✕</button>'+
+            '</div>';
+        }
+        timelineHtml+='</div>';
+      }
+      // Tags HTML
+      var tagsHtml='<div class="client-tags">';
+      if(c.tags)for(var t=0;t<c.tags.length;t++){
+        var tgCls='client-tag';
+        if(c.tags[t]==='意向')tgCls+=' tag-warm';else if(c.tags[t]==='高意向')tgCls+=' tag-hot';else if(c.tags[t]==='成交')tgCls+=' tag-done';
+        tagsHtml+='<span class="'+tgCls+'">'+App.escape(c.tags[t])+'</span>';
+      }
+      tagsHtml+='<span class="client-tag" style="background:#F0F4F8;color:#7F8C8D;">'+progCount+' 条记录</span>';
+      tagsHtml+='</div>';
+
+      html+='<div class="client-card">'+
+        '<div class="client-card-head" onclick="App.toggleClientTimeline(\''+c.id+'\')">'+
+        '<div class="client-card-expand" id="expand-'+c.id+'">▶</div>'+
+        '<div class="client-card-info">'+
+        '<div class="client-name">'+App.escape(c.name)+'</div>'+
+        '<div class="client-detail">'+(c.company?App.escape(c.company):'')+(c.company && c.contact?' | ':'')+(c.contact?App.escape(c.contact):'')+(c.phone?' 📞':'')+
+        '</div>'+
+        tagsHtml+latestHtml+
+        '</div>'+
+        '<div class="client-actions" onclick="event.stopPropagation();">'+
         '<button class="mini-btn" onclick="App.editClient(\''+c.id+'\')">编辑</button>'+
-        '<button class="mini-btn" onclick="App.showAddProgress(\''+c.id+'\')">+ 添加进度</button>'+
-        '</div></div>';
+        '<button class="mini-btn del" onclick="App.deleteClient(\''+c.id+'\')">删除</button>'+
+        '<button class="mini-btn" onclick="App.showAddProgress(\''+c.id+'\')">+进度</button>'+
+        '</div></div>'+
+        timelineHtml+'</div>';
     }
     list.innerHTML=html;
+  },
+  toggleClientTimeline:function(id){
+    var tl=document.getElementById('timeline-'+id);
+    var ex=document.getElementById('expand-'+id);
+    if(tl){
+      var isShow=tl.classList.contains('show');
+      tl.classList.toggle('show');
+      ex.classList.toggle('open');
+      if(!isShow&&tl.children.length===0){
+        tl.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:12px;font-size:12px;">暂无进度记录，点击"+进度"添加</div>';
+      }
+    }
+  },
+  deleteClient:function(id){
+    var self=this;
+    var c=(this.state.data.work.clients||[]).filter(function(x){return x.id===id;})[0];
+    if(!c)return;
+    this.confirmDialog('确定删除客户「'+c.name+'」？\n其 '+((this.state.data.work.progress||[]).filter(function(p){return p.clientId===String(id)||p.clientId===id;}).length)+' 条跟进记录也会保留。',function(){
+      self.state.data.work.clients=self.state.data.work.clients.filter(function(x){return x.id!==id;});
+      self.saveData();
+      self.renderClients();
+      self.showToast('客户已删除');
+    });
   },
   showAddClient:function(){
     this.openClientModal(null);
@@ -1003,26 +1081,11 @@ var App={
     });
   },
 
-  // ---- Weekly Progress ----
+  // ---- Weekly Progress (now rendered inside client cards) ----
   renderProgress:function(){
-    var feed=document.getElementById('progress-feed');
-    if(!feed)return;
-    var progress=this.state.data.work.progress||[];
-    if(progress.length===0){feed.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:16px;font-size:13px;">还没有进度记录，点击下方添加</div>';return;}
-    // Sort by date desc
-    var sorted=progress.slice().sort(function(a,b){return a.date<b.date?1:-1;});
-    var html='';
-    for(var i=0;i<sorted.length;i++){var p=sorted[i];
-      var statusCls=p.status==='已完成'?'tag-done':p.status==='进行中'?'tag-warm':'tag-hot';
-      html+='<div class="progress-item">'+
-        '<div class="progress-date">'+App.escape(p.date)+'</div>'+
-        '<div class="progress-body"><div class="progress-client">'+App.escape(p.clientName)+'</div>'+
-        '<div class="progress-action">'+App.escape(p.action)+'</div></div>'+
-        '<span class="client-tag '+statusCls+'">'+App.escape(p.status||'待跟进')+'</span>'+
-        '<button class="mini-btn" style="margin-left:4px;" onclick="App.deleteProgress('+p.id+')">✕</button>'+
-        '</div>';
-    }
-    feed.innerHTML=html;
+    // Progress timeline is now inline within each client card in renderClients()
+    // This function kept for compatibility - just re-render clients
+    this.renderClients();
   },
   showAddProgress:function(clientId){
     var self=this;
