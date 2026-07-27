@@ -422,8 +422,9 @@ body{padding-bottom:70px;}
   <!-- Daily Data Entry -->
   <div class="card">
     <div class="card-title">📝 今日数据记录</div>
+    <div style="font-size:11px;color:#E74C3C;margin-bottom:8px;">⚠️ 小红书/B站无公开数据接口，请打开平台后台复制真实数字填入</div>
     <div id="media-data-form"></div>
-    <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="App.saveMediaData()">保存今日数据</button>
+    <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="App.saveMediaData()">保存今日真实数据</button>
   </div>
 
   <!-- Hot Topics & Topic Selection -->
@@ -683,8 +684,8 @@ var App={
     if(!d.habits)d.habits=[];
     if(!d.mood)d.mood={};
     if(!d.media)d.media={accounts:[
-      {id:'xiaohongshu',name:'小红书',handle:'小橘不懒惰🍊',platform:'小红书',icon:'🍊'},
-      {id:'bilibili',name:'哔哩哔哩',handle:'小橘不懒惰',platform:'B站',icon:'📺'}
+      {id:'xiaohongshu',name:'小红书',handle:'小橘不懒惰🍊',platform:'小红书',icon:'🍊',totalFollowers:0},
+      {id:'bilibili',name:'哔哩哔哩',handle:'小橘不懒惰',platform:'B站',icon:'📺',totalFollowers:0}
     ],dailyData:{},hotTopics:{},topicSelections:{},monthlyStats:{},quarterlyReports:{}};
     if(!d.work)d.work={keyClients:[],deals:[],salaryPlan:{income:0,fund:0,savings:0,other:0}};
     if(!d.growth)d.growth={finance:{notes:{},fundHotTopics:{}},reading:{books:[],chats:{}},knowledge:[]};
@@ -976,7 +977,6 @@ var App={
   // MEDIA / CREATOR ZONE
   // ================================================================
   renderMedia:function(){
-    this.autoFillMediaData();
     this.renderAccountCards();
     this.renderMediaDataForm();
     this.autoGenerateHotReport();
@@ -1053,32 +1053,46 @@ var App={
     for(var i=0;i<accounts.length;i++){var a=accounts[i];
       var ad=todayData[a.id]||{};
       var hasData=ad&&(ad.views>0||ad.likes>0);
+      var totalF=a.totalFollowers||0;
+      var newF=ad.followers||0;
       html+='<div class="account-card">'+
         '<div class="account-icon">'+(a.icon||'📱')+'</div>'+
         '<div class="account-name">'+App.escape(a.name)+'</div>'+
         '<div class="account-handle">'+App.escape(a.handle)+'</div>'+
-        (hasData?'<div style="font-size:10px;color:#27AE60;margin-top:4px;">✓ 已自动同步</div>':'')+
-        '<div class="account-stat">播放 <b>'+App.formatNum(ad.views||'-')+'</b></div>'+
-        '<div class="account-stat">点赞 <b>'+App.formatNum(ad.likes||'-')+'</b></div>'+
-        '<div class="account-stat">粉丝 +<b>'+App.formatNum(ad.followers||'-')+'</b></div>'+
+        '<div style="margin:8px 0 4px;font-size:11px;color:#95A5A6;">当前总粉丝</div>'+
+        '<div style="font-size:22px;font-weight:700;color:#2C3E50;">'+App.formatNum(totalF)+'</div>'+
+        (newF>0?'<div style="font-size:11px;color:#27AE60;margin-top:2px;">今日 +'+App.formatNum(newF)+'</div>':'')+
+        '<button class="mini-btn" style="margin-top:6px;" onclick="App.setTotalFollowers(\''+a.id+'\')">设置总粉丝数</button>'+
         '</div>';
     }
     container.innerHTML=html;
+  },
+
+  setTotalFollowers:function(accId){
+    var acc=this.state.data.media.accounts.filter(function(a){return a.id===accId;})[0];
+    if(!acc)return;
+    var val=prompt('设置【'+acc.name+'】当前真实总粉丝数：\n（请从平台后台复制真实数字填写）',acc.totalFollowers||'');
+    if(val===null)return;
+    acc.totalFollowers=parseInt(val.replace(/[^\d]/g,''))||0;
+    this.saveData();
+    this.renderAccountCards();
+    this.renderMonthlyStats();
+    this.showToast('已更新总粉丝数');
   },
 
   renderMediaDataForm:function(){
     var form=document.getElementById('media-data-form');
     var accounts=this.state.data.media.accounts||[];
     var todayData=this.state.data.media.dailyData[this.state.currentDate]||{};
-    var html='';
+    var html='<div style="background:rgba(91,168,214,0.08);border-radius:8px;padding:8px 10px;font-size:11px;color:#5BA8D6;margin-bottom:10px;">💡 打开平台后台，复制今天的真实数据填入下方（播放量/点赞/评论/新增粉丝）</div>';
     for(var i=0;i<accounts.length;i++){var a=accounts[i];
       var ad=todayData[a.id]||{};
       html+='<div style="margin-bottom:12px;"><div style="font-weight:600;font-size:13px;margin-bottom:6px;">'+(a.icon||'📱')+' '+App.escape(a.name)+'</div>'+
         '<div class="data-entry-row">'+
-        '<div style="flex:1;"><div class="data-label">播放/阅读</div><input class="data-input" id="md_'+a.id+'_views" value="'+(ad.views||'')+'" placeholder="0"></div>'+
-        '<div style="flex:1;"><div class="data-label">点赞</div><input class="data-input" id="md_'+a.id+'_likes" value="'+(ad.likes||'')+'" placeholder="0"></div>'+
-        '<div style="flex:1;"><div class="data-label">评论</div><input class="data-input" id="md_'+a.id+'_comments" value="'+(ad.comments||'')+'" placeholder="0"></div>'+
-        '<div style="flex:1;"><div class="data-label">新增粉丝</div><input class="data-input" id="md_'+a.id+'_followers" value="'+(ad.followers||'')+'" placeholder="0"></div>'+
+        '<div style="flex:1;"><div class="data-label">播放/阅读</div><input class="data-input" id="md_'+a.id+'_views" value="'+(ad.views||'')+'" placeholder="0" inputmode="numeric"></div>'+
+        '<div style="flex:1;"><div class="data-label">点赞</div><input class="data-input" id="md_'+a.id+'_likes" value="'+(ad.likes||'')+'" placeholder="0" inputmode="numeric"></div>'+
+        '<div style="flex:1;"><div class="data-label">评论</div><input class="data-input" id="md_'+a.id+'_comments" value="'+(ad.comments||'')+'" placeholder="0" inputmode="numeric"></div>'+
+        '<div style="flex:1;"><div class="data-label">新增粉丝</div><input class="data-input" id="md_'+a.id+'_followers" value="'+(ad.followers||'')+'" placeholder="0" inputmode="numeric"></div>'+
         '</div></div>';
     }
     form.innerHTML=html;
@@ -1250,10 +1264,16 @@ var App={
       }
     });
 
+    // Total followers = base + sum of new followers this month
+    var totalFollowers=0;
+    accounts.forEach(function(a){totalFollowers+=(a.totalFollowers||0);});
+    totalFollowers+=totals.newFollowers;
+
     el.innerHTML='<table class="topic-table"><tbody>'+
+      '<tr><td>当前总粉丝</td><td><b>'+App.formatNum(totalFollowers)+'</b></td><td>本月新增</td><td><b>+'+App.formatNum(totals.newFollowers)+'</b></td></tr>'+
       '<tr><td>总播放/阅读</td><td><b>'+App.formatNum(totals.views)+'</b></td><td>总点赞</td><td><b>'+App.formatNum(totals.likes)+'</b></td></tr>'+
-      '<tr><td>总评论</td><td><b>'+App.formatNum(totals.comments)+'</b></td><td>新增粉丝</td><td><b>'+App.formatNum(totals.newFollowers)+'</b></td></tr>'+
-      '<tr><td>更新天数</td><td><b>'+totals.posts+' 天</b></td><td>日均互动</td><td><b>'+App.formatNum(Math.round((totals.likes+totals.comments)/Math.max(totals.posts,1)))+'</b></td></tr>'+
+      '<tr><td>总评论</td><td><b>'+App.formatNum(totals.comments)+'</b></td><td>更新天数</td><td><b>'+totals.posts+' 天</b></td></tr>'+
+      '<tr><td>日均播放</td><td><b>'+App.formatNum(Math.round(totals.views/Math.max(totals.posts,1)))+'</b></td><td>日均互动</td><td><b>'+App.formatNum(Math.round((totals.likes+totals.comments)/Math.max(totals.posts,1)))+'</b></td></tr>'+
       '</tbody></table>';
   },
 
@@ -1283,7 +1303,12 @@ var App={
       }
     });
 
+    var totalFollowers=0;
+    accounts.forEach(function(a){totalFollowers+=(a.totalFollowers||0);});
+    totalFollowers+=qTotals.followers;
+
     content+='\n📈 数据汇总\n';
+    content+='  当前总粉丝：'+App.formatNum(totalFollowers)+'\n';
     content+='  总播放/阅读：'+App.formatNum(qTotals.views)+'\n';
     content+='  总点赞：'+App.formatNum(qTotals.likes)+'\n';
     content+='  总评论：'+App.formatNum(qTotals.comments)+'\n';
