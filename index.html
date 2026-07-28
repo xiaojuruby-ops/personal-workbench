@@ -1052,10 +1052,10 @@ var App={
   },
   deleteClient:function(id){
     var self=this;
-    var c=(this.state.data.work.clients||[]).filter(function(x){return x.id===id;})[0];
+    var c=(this.state.data.work.clients||[]).filter(function(x){return String(x.id)===String(id);})[0];
     if(!c)return;
     this.confirmDialog('确定删除客户「'+c.name+'」？\n其 '+((this.state.data.work.progress||[]).filter(function(p){return p.clientId===String(id)||p.clientId===id;}).length)+' 条跟进记录也会保留。',function(){
-      self.state.data.work.clients=self.state.data.work.clients.filter(function(x){return x.id!==id;});
+      self.state.data.work.clients=self.state.data.work.clients.filter(function(x){return String(x.id)!==String(id);});
       self.saveData();
       self.renderClients();
       self.showToast('客户已删除');
@@ -1065,7 +1065,7 @@ var App={
     this.openClientModal(null);
   },
   editClient:function(id){
-    var c=(this.state.data.work.clients||[]).filter(function(x){return x.id===id;})[0];
+    var c=(this.state.data.work.clients||[]).filter(function(x){return String(x.id)===String(id);})[0];
     if(!c){this.showToast('客户不存在');return;}
     this.openClientModal(c);
   },
