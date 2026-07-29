@@ -228,32 +228,46 @@ body{padding-bottom:70px;}
 .progress-client{font-size:13px;font-weight:600;color:#2C3E50;}
 .progress-action{font-size:12px;color:#7F8C8D;margin-top:2px;line-height:1.4;}
 
-/* ===== Month Calendar Board ===== */
-.cal-nav{margin-left:auto;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;font-size:13px;color:#5BA8D6;font-weight:600;}
-.cal-arrow{width:24px;height:24px;line-height:22px;text-align:center;border-radius:50%;background:#EBF5FB;cursor:pointer;font-size:20px;color:#5BA8D6;flex-shrink:0;}
-.cal-arrow:active{background:#D6EBF7;}
-#cal-month-label{cursor:pointer;min-width:74px;text-align:center;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
-.cal-wk{font-size:11px;text-align:center;color:#A0AEC0;padding:2px 0;font-weight:600;}
-.cal-cell{background:#F8FAFC;border-radius:8px;padding:4px 3px;min-height:50px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:2px;cursor:pointer;position:relative;overflow:hidden;}
-.cal-cell.empty{background:transparent;cursor:default;}
-.cal-cell.today{background:#EBF5FB;box-shadow:0 0 0 2px #5BA8D6 inset;}
-.cal-cell.selected{box-shadow:0 0 0 2px #5BA8D6;}
-.cal-cell.past{opacity:0.55;}
-.cal-date{font-size:11px;font-weight:600;color:#2C3E50;align-self:flex-start;line-height:1;}
-.cal-cell.today .cal-date{color:#2980B9;}
-.cal-dot{position:absolute;top:4px;right:5px;width:6px;height:6px;border-radius:50%;background:#5BA8D6;}
-.cal-dot.done{background:#27AE60;}
-.cal-cell-body{margin-top:1px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:2px;overflow:hidden;}
-.cal-chip{font-size:9.5px;line-height:1.25;background:#fff;border-radius:4px;padding:2px 3px;color:#34495E;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.cal-chip.done{opacity:0.5;text-decoration:line-through;}
-.cal-detail{margin-top:12px;border-top:1px solid #EDF1F5;padding-top:10px;}
-.cal-detail-head{font-size:13px;font-weight:600;color:#2C3E50;margin-bottom:8px;}
-.cal-detail-list{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:6px;}
-.cal-detail-item{display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start;gap:8px;background:#F8FAFC;border-radius:8px;padding:8px;}
-.cal-detail-item .week-text{white-space:normal;overflow:visible;text-overflow:clip;font-size:13px;line-height:1.4;word-break:break-word;}
-.cal-empty{font-size:12px;color:#B0BEC5;padding:6px 0;}
+/* ===== Mini Calendar + Day Plan List (mcal- prefix) ===== */
+.mcal-header{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.mcal-title{font-size:15px;font-weight:700;color:#2C3E50;}
+.mcal-nav{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:6px;}
+.mcal-arrow{width:28px;height:28px;line-height:26px;text-align:center;border-radius:50%;background:#EBF5FB;cursor:pointer;font-size:17px;color:#5BA8D6;flex-shrink:0;border:none;}
+.mcal-arrow:active{background:#D6EBF7;}
+#mcal-month-label{cursor:pointer;font-size:14px;font-weight:600;color:#5BA8D6;min-width:80px;text-align:center;}
+/* Mini calendar grid — compact, navigation only */
+.mcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:12px;}
+.mcal-wk{font-size:10px;text-align:center;color:#A0AEC0;padding:3px 0;font-weight:600;letter-spacing:1px;}
+.mcal-day{text-align:center;padding:6px 2px 4px;border-radius:10px;cursor:pointer;position:relative;font-size:13px;font-weight:500;color:#34495E;line-height:1.2;
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:center;align-items:center;gap:2px;}
+.mcal-day:hover{background:#F0F4F8;}
+.mcal-day.today{background:#5BA8D6;color:#fff;font-weight:700;}
+.mcal-day.selected:not(.today){background:#EBF5FB;color:#2980B9;font-weight:600;box-shadow:inset 0 0 0 1.5px #5BA8D6;}
+.mcal-day.past{opacity:0.4;}
+.mcal-dot{width:5px;height:5px;border-radius:50%;background:#5BA8D6;flex-shrink:0;}
+.mcal-day.today .mcal-dot{background:#fff;opacity:0.7;}
+.mcal-day .mcal-dot.all-done{background:#27AE60;}
+.mcal-day.today .mcal-dot.all-done{background:#82E0AA;}
+/* Day plan list — full width, readable */
+.mcal-plan-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:6px;margin-bottom:8px;}
+.mcal-plan-date{font-size:15px;font-weight:700;color:#2C3E50;}
+.mcal-plan-badge{font-size:11px;color:#fff;background:#27AE60;padding:1px 7px;border-radius:10px;font-weight:600;}
+.mcal-plan-badge.partial{background:#F39C12;}
+.mcal-item{display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start;gap:10px;background:#F8FAFC;border-radius:10px;padding:10px 12px;margin-bottom:6px;
+  border-left:3px solid transparent;transition:border-color .15s;}
+.mcal-item:hover{border-left-color:#5BA8D6;}
+.mcal-cb{width:20px;height:20px;border-radius:6px;border:2px solid #CBD5E0;cursor:pointer;flex-shrink:0;margin-top:1px;
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;background:#fff;font-size:12px;color:#fff;transition:all .15s;}
+.mcal-cb.done{background:#27AE60;border-color:#27AE60;}
+.mcal-text{flex:1;font-size:14px;line-height:1.45;word-break:break-word;color:#2C3E50;cursor:pointer;padding-top:1px;}
+.mcal-text.done{text-decoration:line-through;color:#B0BEC5;}
+.mcal-actions{display:-webkit-flex;display:flex;gap:2px;flex-shrink:0;opacity:0;transition:opacity .15s;}
+.mcal-item:hover .mcal-actions,.mcal-item:focus-within .mcal-actions{opacity:1;}
+.mcal-edit{background:none;border:none;color:#5BA8D6;cursor:pointer;font-size:15px;padding:2px 4px;line-height:1;}
+.mcal-del{background:none;border:none;color:#E74C3C;cursor:pointer;font-size:14px;padding:2px 4px;opacity:0.5;}
+.mcal-del:active{opacity:1;}
+.mcal-empty{text-align:center;color:#A0AEC0;font-size:13px;padding:18px 0 6px;line-height:1.5;}
+.mcal-add-btn{width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;letter-spacing:0.5px;}
 /* shared checkbox/text for calendar detail */
 .week-cb{width:17px;height:17px;border-radius:5px;border:2px solid #CBD5E0;cursor:pointer;flex-shrink:0;margin-top:1px;
   display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;background:#F7FAFC;font-size:11px;color:#fff;}
@@ -512,14 +526,14 @@ body{padding-bottom:70px;}
     <button class="btn btn-outline btn-sm" style="margin-top:10px;margin-left:6px;" onclick="App.showAddProgress()">+ 添加跟进记录</button>
   </div>
 
-  <!-- 本月日历看板 -->
+  <!-- 本月日历看板（迷你日历 + 当日计划） -->
   <div class="card">
-    <div class="section-header">
-      📅 本月日历
-      <span class="cal-nav">
-        <span class="cal-arrow" onclick="App.prevMonth()">‹</span>
-        <span id="cal-month-label" onclick="App.resetMonth()">—</span>
-        <span class="cal-arrow" onclick="App.nextMonth()">›</span>
+    <div class="mcal-header">
+      <span class="mcal-title">📅 日历计划</span>
+      <span class="mcal-nav">
+        <button class="mcal-arrow" onclick="App.prevMonth()">‹</button>
+        <span id="mcal-month-label" onclick="App.resetMonth()">—</span>
+        <button class="mcal-arrow" onclick="App.nextMonth()">›</button>
       </span>
     </div>
     <div id="weekly-plan"></div>
@@ -1303,56 +1317,62 @@ var App={
     var viewMonth=this.state.calViewMonth||this.getMonthKey(this.state.currentDate);
     this.state.calViewMonth=viewMonth;
     var p=viewMonth.split('-');var y=+p[0],m=+p[1]-1;
-    var monthLabelEl=document.getElementById('cal-month-label');
-    if(monthLabelEl)monthLabelEl.textContent=y+'年'+(m+1)+'月';
-    var first=new Date(y,m,1);
-    var startDay=first.getDay();
-    var daysInMonth=new Date(y,m+1,0).getDate();
+    // Update month label
+    var ml=document.getElementById('mcal-month-label');
+    if(ml)ml.textContent=y+'年'+(m+1)+'月';
+    // ---- Mini Calendar Grid (compact navigation) ----
+    var first=new Date(y,m,1);var startDay=first.getDay();var daysInMonth=new Date(y,m+1,0).getDate();
     var plan=this.state.data.work.weeklyPlan||[];
     function itemsFor(dk){return plan.filter(function(x){return x.dateKey===dk;});}
-    function meta(dk){var pp=dk.split('-');var dd=new Date(+pp[0],+pp[1]-1,+pp[2]);var wd=['周日','周一','周二','周三','周四','周五','周六'];return {wd:wd[dd.getDay()],label:(dd.getMonth()+1)+'/'+dd.getDate()};}
+    function meta(dk){var pp=dk.split('-');var dd=new Date(+pp[0],+pp[1]-1,+pp[2]);var wd=['周日','周一','周二','周三','周四','周五','周六'];return{wd:wd[dd.getDay()],label:(dd.getMonth()+1)+'/'+dd.getDate(),mLabel:(dd.getMonth()+1)+'月'+dd.getDate()+'日'};}
     var wk=['日','一','二','三','四','五','六'];
-    var html='<div class="cal-grid">';
-    for(var i=0;i<7;i++)html+='<div class="cal-wk">'+wk[i]+'</div>';
-    for(var e=0;e<startDay;e++)html+='<div class="cal-cell empty"></div>';
+    var html='<div class="mcal-grid">';
+    for(var i=0;i<7;i++)html+='<div class="mcal-wk">'+wk[i]+'</div>';
+    for(var e=0;e<startDay;e++)html+='<div class="mcal-day"></div>';
     for(var d=1;d<=daysInMonth;d++){
       var dk=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
       var its=itemsFor(dk);
       var allDone=its.length>0&&its.every(function(x){return x.done;});
-      var cls='cal-cell'+(dk===this.state.currentDate?' today':'')+(dk===this.state.calSelectedDate?' selected':'')+((dk<this.state.currentDate)?' past':'');
-      var dot=its.length>0?'<span class="cal-dot'+(allDone?' done':'')+'"></span>':'';
-      var body='';
-      for(var j=0;j<its.length;j++){var it=its[j];
-        body+='<div class="cal-chip'+(it.done?' done':'')+'" onclick="event.stopPropagation();App.toggleWeeklyPlan('+it.id+')">'+App.escape(it.content)+'</div>';
+      var cls='mcal-day';
+      if(dk===this.state.currentDate)cls+=' today';
+      else if(dk===this.state.calSelectedDate)cls+=' selected';
+      if(dk<this.state.currentDate&&!cls.match(/today|selected/))cls+=' past';
+      var dot='';
+      if(its.length>0){
+        dot='<span class="mcal-dot'+(allDone?' all-done':'')+'"></span>';
       }
-      html+='<div class="'+cls+'" onclick="App.selectCalDate(\''+dk+'\')">'+dot+'<span class="cal-date">'+d+'</span><div class="cal-cell-body">'+body+'</div></div>';
+      html+='<div class="'+cls+'" onclick="App.selectCalDate(\''+dk+'\')">'+d+dot+'</div>';
     }
     html+='</div>';
-    // selected-day detail (full text, always visible — no hover needed)
+    // ---- Selected Day Plan List (full width, readable) ----
     var sel=this.state.calSelectedDate||this.state.currentDate;
     var sm=meta(sel);
     var selItems=itemsFor(sel);
-    html+='<div class="cal-detail">';
-    html+='<div class="cal-detail-head">📌 '+sm.label+'（'+sm.wd+'）'+(sel===this.state.currentDate?' · 今天':'');
     var doneN=0;for(var q=0;q<selItems.length;q++)if(selItems[q].done)doneN++;
-    if(selItems.length>0)html+=' <span style="color:#27AE60;font-weight:400;">'+doneN+'/'+selItems.length+' 完成</span>';
-    html+='</div>';
+    // Date header
+    html+='<div class="mcal-plan-head">';
+    html+='<span class="mcal-plan-date">📌 '+sm.mLabel+'（'+sm.wd+'）'+(sel===this.state.currentDate?' · 今天':'')+'</span>';
     if(selItems.length>0){
-      html+='<div class="cal-detail-list">';
-      for(var k=0;k<selItems.length;k++){var si=selItems[k];
-        html+='<div class="cal-detail-item">'+
-          '<div class="week-cb'+(si.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+si.id+')">'+(si.done?'✓':'')+'</div>'+
-          '<div class="week-text'+(si.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+si.id+')">'+App.escape(si.content)+'</div>'+
-          '<button class="week-edit" onclick="event.stopPropagation();App.editWeeklyPlan('+si.id+')">✎</button>'+
-          '<button class="week-del" onclick="event.stopPropagation();App.deleteWeeklyPlan('+si.id+')">✕</button>'+
-          '</div>';
-      }
-      html+='</div>';
-    }else{
-      html+='<div class="cal-empty">这一天还没有计划，点下面按钮添加 👇</div>';
+      var badgeCls=(doneN===selItems.length)?'mcal-plan-badge':'mcal-plan-badge partial';
+      html+='<span class="'+badgeCls+'">'+doneN+'/'+selItems.length+'</span>';
     }
-    html+='<button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%;" onclick="App.addPlanForSelected()">+ 给 '+sm.label+' 添加计划</button>';
     html+='</div>';
+    // Plan items
+    if(selItems.length>0){
+      for(var k=0;k<selItems.length;k++){var si=selItems[k];
+        html+='<div class="mcal-item">'+
+          '<div class="mcal-cb'+(si.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+si.id+')">'+(si.done?'✓':'')+'</div>'+
+          '<div class="mcal-text'+(si.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+si.id+')">'+App.escape(si.content)+'</div>'+
+          '<span class="mcal-actions">'+
+          '<button class="mcal-edit" onclick="event.stopPropagation();App.editWeeklyPlan('+si.id+')">✎</button>'+
+          '<button class="mcal-del" onclick="event.stopPropagation();App.deleteWeeklyPlan('+si.id+')">✕</button>'+
+          '</span></div>';
+      }
+    }else{
+      html+='<div class="mcal-empty">这一天还没有计划，点下方添加 👇</div>';
+    }
+    // Add button
+    html+='<button class="btn btn-primary mcal-add-btn" onclick="App.addPlanForSelected()">+ 给 '+sm.label+' 添加计划</button>';
     el.innerHTML=html;
   },
   selectCalDate:function(dk){this.state.calSelectedDate=dk;this.renderMonthlyBoard();},
