@@ -228,35 +228,46 @@ body{padding-bottom:70px;}
 .progress-client{font-size:13px;font-weight:600;color:#2C3E50;}
 .progress-action{font-size:12px;color:#7F8C8D;margin-top:2px;line-height:1.4;}
 
-/* ===== Weekly Plan (horizontal board) ===== */
-.weekly-board{display:-webkit-flex;display:flex;-webkit-overflow-scrolling:touch;overflow-x:auto;gap:10px;padding:4px 2px 12px;
-  scrollbar-width:none;-ms-overflow-style:none;}
-.weekly-board::-webkit-scrollbar{display:none;}
-.week-day{flex:0 0 auto;width:148px;background:#F8FAFC;border-radius:12px;padding:10px 9px;min-height:72px;
-  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
-  box-shadow:0 1px 3px rgba(0,0,0,0.04);}
-.week-day-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:5px;cursor:pointer;margin-bottom:6px;}
-.week-day-name{font-size:14px;font-weight:700;color:#2C3E50;letter-spacing:0.5px;}
-.week-day-date{font-size:11px;color:#A0AEC0;font-weight:500;}
-.week-day-add{margin-left:auto;font-size:18px;color:#5BA8D6;line-height:1;width:22px;text-align:center;}
-.week-day.is-today{background:linear-gradient(180deg,#EBF5FB,#F0F8FF);box-shadow:0 0 0 2px #5BA8D6,0 2px 8px rgba(91,168,214,0.12);}
-.week-day.is-today .week-day-name{color:#2980B9;}
-.week-items{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:3px;}
-.week-item{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:6px;padding:7px 5px;background:#fff;border-radius:8px;
-  box-shadow:0 1px 2px rgba(0,0,0,0.03);position:relative;}
-.week-cb{width:17px;height:17px;border-radius:5px;border:2px solid #CBD5E0;cursor:pointer;flex-shrink:0;
+/* ===== Month Calendar Board ===== */
+.cal-nav{margin-left:auto;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;font-size:13px;color:#5BA8D6;font-weight:600;}
+.cal-arrow{width:24px;height:24px;line-height:22px;text-align:center;border-radius:50%;background:#EBF5FB;cursor:pointer;font-size:20px;color:#5BA8D6;flex-shrink:0;}
+.cal-arrow:active{background:#D6EBF7;}
+#cal-month-label{cursor:pointer;min-width:74px;text-align:center;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.cal-wk{font-size:11px;text-align:center;color:#A0AEC0;padding:2px 0;font-weight:600;}
+.cal-cell{background:#F8FAFC;border-radius:8px;padding:4px 3px;min-height:50px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:2px;cursor:pointer;position:relative;overflow:hidden;}
+.cal-cell.empty{background:transparent;cursor:default;}
+.cal-cell.today{background:#EBF5FB;box-shadow:0 0 0 2px #5BA8D6 inset;}
+.cal-cell.selected{box-shadow:0 0 0 2px #5BA8D6;}
+.cal-cell.past{opacity:0.55;}
+.cal-date{font-size:11px;font-weight:600;color:#2C3E50;align-self:flex-start;line-height:1;}
+.cal-cell.today .cal-date{color:#2980B9;}
+.cal-dot{position:absolute;top:4px;right:5px;width:6px;height:6px;border-radius:50%;background:#5BA8D6;}
+.cal-dot.done{background:#27AE60;}
+.cal-cell-body{margin-top:1px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:2px;overflow:hidden;}
+.cal-chip{font-size:9.5px;line-height:1.25;background:#fff;border-radius:4px;padding:2px 3px;color:#34495E;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cal-chip.done{opacity:0.5;text-decoration:line-through;}
+.cal-detail{margin-top:12px;border-top:1px solid #EDF1F5;padding-top:10px;}
+.cal-detail-head{font-size:13px;font-weight:600;color:#2C3E50;margin-bottom:8px;}
+.cal-detail-list{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:6px;}
+.cal-detail-item{display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start;gap:8px;background:#F8FAFC;border-radius:8px;padding:8px;}
+.cal-detail-item .week-text{white-space:normal;overflow:visible;text-overflow:clip;font-size:13px;line-height:1.4;word-break:break-word;}
+.cal-empty{font-size:12px;color:#B0BEC5;padding:6px 0;}
+/* shared checkbox/text for calendar detail */
+.week-cb{width:17px;height:17px;border-radius:5px;border:2px solid #CBD5E0;cursor:pointer;flex-shrink:0;margin-top:1px;
   display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;background:#F7FAFC;font-size:11px;color:#fff;}
 .week-cb.done{background:#27AE60;border-color:#27AE60;}
-.week-text{flex:1;font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.week-text{flex:1;color:#34495E;}
 .week-text.done{text-decoration:line-through;color:#B0BEC5;}
-.week-actions{position:absolute;top:3px;right:3px;display:-webkit-flex;display:flex;gap:1px;opacity:0;
-  transition:opacity .15s;}
-.week-item:hover .week-actions,.week-item:focus-within .week-actions{opacity:1;}
-.week-edit{background:none;border:none;color:#5BA8D6;cursor:pointer;font-size:12px;padding:1px 2px;flex-shrink:0;line-height:1;}
-.week-del{background:none;border:none;color:#E74C3C;cursor:pointer;font-size:12px;padding:1px 2px;flex-shrink:0;opacity:0.45;}
+.week-edit{background:none;border:none;color:#5BA8D6;cursor:pointer;font-size:13px;padding:0 3px;flex-shrink:0;}
+.week-del{background:none;border:none;color:#E74C3C;cursor:pointer;font-size:13px;padding:0 3px;opacity:0.55;flex-shrink:0;}
 .week-del:active{opacity:1;}
-.week-empty{text-align:center;color:#D0D7DE;font-size:12px;padding:10px 0 4px;letter-spacing:1px;}
-.week-count{font-size:10px;color:#A0AEC0;text-align:center;margin-top:4px;}
+/* ===== Monthly Summary (dismissible) ===== */
+.ms-box{background:#F8FAFC;border-radius:10px;padding:10px;}
+.ms-pre{font-size:12px;line-height:1.6;white-space:pre-wrap;word-break:break-word;margin:0;color:#34495E;}
+.ms-dismiss{margin-top:8px;background:none;border:1px solid #E0E6ED;border-radius:8px;padding:5px 12px;font-size:12px;color:#95A5A6;cursor:pointer;width:100%;}
+.ms-collapsed{background:#F0F4F8;border-radius:10px;padding:12px;text-align:center;font-size:13px;color:#5BA8D6;cursor:pointer;}
 
 /* ===== History ===== */
 .hist-tabs{display:-webkit-flex;display:flex;gap:8px;margin-bottom:8px;}
@@ -501,9 +512,16 @@ body{padding-bottom:70px;}
     <button class="btn btn-outline btn-sm" style="margin-top:10px;margin-left:6px;" onclick="App.showAddProgress()">+ 添加跟进记录</button>
   </div>
 
-  <!-- 本周计划（按每天） -->
+  <!-- 本月日历看板 -->
   <div class="card">
-    <div class="section-header">📅 本周计划</div>
+    <div class="section-header">
+      📅 本月日历
+      <span class="cal-nav">
+        <span class="cal-arrow" onclick="App.prevMonth()">‹</span>
+        <span id="cal-month-label" onclick="App.resetMonth()">—</span>
+        <span class="cal-arrow" onclick="App.nextMonth()">›</span>
+      </span>
+    </div>
     <div id="weekly-plan"></div>
   </div>
 
@@ -747,7 +765,8 @@ var App={
     saveTimer:null,syncPending:false,_cloudSaving:false,
     workspaceId:null,supabaseReady:false,
     mediaSub:'hot',growthSub:'finance',planSub:'done',
-    chartMetric:'views',currentBookId:null},
+    chartMetric:'views',currentBookId:null,
+    calViewMonth:null,calSelectedDate:null,historyMode:'week'},
 
   // ---- Init ----
   init:function(){
@@ -887,7 +906,7 @@ var App={
     document.querySelectorAll('.zone-tab').forEach(function(t){t.classList.remove('active');});
     var tabs=document.querySelectorAll('.zone-tab[data-zone="'+zone+'"]');
     if(tabs.length>0)tabs[0].classList.add('active');
-    if(zone==='work'){this.renderToday();this.renderClients();this.renderProgress();this.renderWeeklyPlan();this.renderMonthlySummary();this.renderDeals();this.renderHistory();}
+    if(zone==='work'){this.renderToday();this.renderClients();this.renderProgress();this.renderMonthlyBoard();this.renderMonthlySummary();this.renderDeals();this.renderHistory();}
     if(zone==='media'){this.renderMedia();}
     if(zone==='growth'){this.renderGrowth();}
     if(zone==='plan'){this.renderPlan();}
@@ -901,7 +920,7 @@ var App={
     try{this.renderHabits();}catch(e){console.log('renderHabits error:',e.message);}
     try{this.renderClients();}catch(e){}
     try{this.renderProgress();}catch(e){}
-    try{this.renderWeeklyPlan();}catch(e){}
+    try{this.renderMonthlyBoard();}catch(e){}
     try{this.renderMonthlySummary();}catch(e){}
     try{this.renderDeals();}catch(e){}
     try{this.renderHistory();}catch(e){}
@@ -1003,14 +1022,15 @@ var App={
         tasks[i].done=!tasks[i].done;
         if(tasks[i].done){
           this.addTaskToWeeklyPlan(tasks[i].text, tasks[i].id);
-          this.logHistory(key, tasks[i].text, 'task');
+          this.logHistory(key, tasks[i].text, 'task', 'task:'+tasks[i].id);
         }else{
-          // remove the auto-linked weekly-plan entry
+          // remove the auto-linked weekly-plan entry AND its history record
           if(this.state.data.work.weeklyPlan){
             this.state.data.work.weeklyPlan=this.state.data.work.weeklyPlan.filter(function(p){
               return String(p.sourceTaskId)!==String(tasks[i].id);
             });
           }
+          this.removeHistoryByRef('task:'+tasks[i].id, key);
         }
         break;
       }
@@ -1018,7 +1038,7 @@ var App={
     this.saveData();
     this.renderToday();
     this.renderTasks();
-    this.renderWeeklyPlan();
+    this.renderMonthlyBoard();
   },
   // Mirror a completed today-todo into today's column of the weekly board
   addTaskToWeeklyPlan:function(text, taskId){
@@ -1047,7 +1067,12 @@ var App={
     if(!h||!h.name)return;
     var tk=this.state.currentDate;
     if(!h.records)h.records={};
-    if(h.records[tk]){delete h.records[tk];}else{h.records[tk]=true;this.showToast('打卡成功！💪');this.logHistory(tk, h.name+' 打卡', 'habit');}
+    if(h.records[tk]){
+      delete h.records[tk];
+      this.removeHistoryByRef('habit:'+idx+':'+tk, tk);
+    }else{
+      h.records[tk]=true;this.showToast('打卡成功！💪');this.logHistory(tk, h.name+' 打卡', 'habit', 'habit:'+idx+':'+tk);
+    }
     // Update streak
     var streak=0;
     var d=new Date();
@@ -1271,40 +1296,87 @@ var App={
     }
     return arr;
   },
-  renderWeeklyPlan:function(){
+  renderMonthlyBoard:function(){
     var el=document.getElementById('weekly-plan');
     if(!el)return;
     var self=this;
-    var weeks=this.getWeekDates();
+    var viewMonth=this.state.calViewMonth||this.getMonthKey(this.state.currentDate);
+    this.state.calViewMonth=viewMonth;
+    var p=viewMonth.split('-');var y=+p[0],m=+p[1]-1;
+    var monthLabelEl=document.getElementById('cal-month-label');
+    if(monthLabelEl)monthLabelEl.textContent=y+'年'+(m+1)+'月';
+    var first=new Date(y,m,1);
+    var startDay=first.getDay();
+    var daysInMonth=new Date(y,m+1,0).getDate();
     var plan=this.state.data.work.weeklyPlan||[];
-    var todayKey=this.state.currentDate;
-    var html='';
-    for(var i=0;i<weeks.length;i++){var w=weeks[i];
-      var dayItems=plan.filter(function(p){return p.dateKey===w.key;});
-      var doneCount=0;
-      var itemsHtml='';
-      if(dayItems.length>0){
-        itemsHtml='<div class="week-items">';
-        for(var j=0;j<dayItems.length;j++){var it=dayItems[j];if(it.done)doneCount++;
-          itemsHtml+='<div class="week-item">'+
-            '<div class="week-cb'+(it.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+it.id+')">'+(it.done?'✓':'')+'</div>'+
-            '<div class="week-text'+(it.done?' done':'')+'" title="'+App.escape(it.content)+'" onclick="App.toggleWeeklyPlan('+it.id+')">'+App.escape(it.content)+'</div>'+
-            '<span class="week-actions"><button class="week-edit" onclick="event.stopPropagation();App.editWeeklyPlan('+it.id+')">✎</button><button class="week-del" onclick="event.stopPropagation();App.deleteWeeklyPlan('+it.id+')">✕</button></span>'+
-            '</div>';
-        }
-        itemsHtml+='</div>';
-      }else{
-        itemsHtml='<div class="week-items"><div class="week-empty">—</div></div>';
+    function itemsFor(dk){return plan.filter(function(x){return x.dateKey===dk;});}
+    function meta(dk){var pp=dk.split('-');var dd=new Date(+pp[0],+pp[1]-1,+pp[2]);var wd=['周日','周一','周二','周三','周四','周五','周六'];return {wd:wd[dd.getDay()],label:(dd.getMonth()+1)+'/'+dd.getDate()};}
+    var wk=['日','一','二','三','四','五','六'];
+    var html='<div class="cal-grid">';
+    for(var i=0;i<7;i++)html+='<div class="cal-wk">'+wk[i]+'</div>';
+    for(var e=0;e<startDay;e++)html+='<div class="cal-cell empty"></div>';
+    for(var d=1;d<=daysInMonth;d++){
+      var dk=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+      var its=itemsFor(dk);
+      var allDone=its.length>0&&its.every(function(x){return x.done;});
+      var cls='cal-cell'+(dk===this.state.currentDate?' today':'')+(dk===this.state.calSelectedDate?' selected':'')+((dk<this.state.currentDate)?' past':'');
+      var dot=its.length>0?'<span class="cal-dot'+(allDone?' done':'')+'"></span>':'';
+      var body='';
+      for(var j=0;j<its.length;j++){var it=its[j];
+        body+='<div class="cal-chip'+(it.done?' done':'')+'" onclick="event.stopPropagation();App.toggleWeeklyPlan('+it.id+')">'+App.escape(it.content)+'</div>';
       }
-      html+='<div class="week-day'+(w.isToday?' is-today':'')+'">'+
-        '<div class="week-day-head" onclick="App.showAddWeeklyPlan(\''+w.key+'\',\''+w.weekday+'\',\''+w.label+'\')">'+
-        '<span class="week-day-name">'+w.weekday+'</span>'+
-        '<span class="week-day-date">'+w.label+'</span>'+
-        '<span class="week-day-add">+</span>'+
-        '</div>'+itemsHtml+
-        (dayItems.length>0?'<div class="week-count">'+doneCount+'/'+dayItems.length+'</div>':'')+'</div>';
+      html+='<div class="'+cls+'" onclick="App.selectCalDate(\''+dk+'\')">'+dot+'<span class="cal-date">'+d+'</span><div class="cal-cell-body">'+body+'</div></div>';
     }
-    el.innerHTML='<div class="weekly-board">'+html+'</div>';
+    html+='</div>';
+    // selected-day detail (full text, always visible — no hover needed)
+    var sel=this.state.calSelectedDate||this.state.currentDate;
+    var sm=meta(sel);
+    var selItems=itemsFor(sel);
+    html+='<div class="cal-detail">';
+    html+='<div class="cal-detail-head">📌 '+sm.label+'（'+sm.wd+'）'+(sel===this.state.currentDate?' · 今天':'');
+    var doneN=0;for(var q=0;q<selItems.length;q++)if(selItems[q].done)doneN++;
+    if(selItems.length>0)html+=' <span style="color:#27AE60;font-weight:400;">'+doneN+'/'+selItems.length+' 完成</span>';
+    html+='</div>';
+    if(selItems.length>0){
+      html+='<div class="cal-detail-list">';
+      for(var k=0;k<selItems.length;k++){var si=selItems[k];
+        html+='<div class="cal-detail-item">'+
+          '<div class="week-cb'+(si.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+si.id+')">'+(si.done?'✓':'')+'</div>'+
+          '<div class="week-text'+(si.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+si.id+')">'+App.escape(si.content)+'</div>'+
+          '<button class="week-edit" onclick="event.stopPropagation();App.editWeeklyPlan('+si.id+')">✎</button>'+
+          '<button class="week-del" onclick="event.stopPropagation();App.deleteWeeklyPlan('+si.id+')">✕</button>'+
+          '</div>';
+      }
+      html+='</div>';
+    }else{
+      html+='<div class="cal-empty">这一天还没有计划，点下面按钮添加 👇</div>';
+    }
+    html+='<button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%;" onclick="App.addPlanForSelected()">+ 给 '+sm.label+' 添加计划</button>';
+    html+='</div>';
+    el.innerHTML=html;
+  },
+  selectCalDate:function(dk){this.state.calSelectedDate=dk;this.renderMonthlyBoard();},
+  prevMonth:function(){
+    var p=this.state.calViewMonth.split('-');var y=+p[0],m=+p[1]-1;m--;if(m<0){m=11;y--;}
+    var nm=y+'-'+String(m+1).padStart(2,'0');this.state.calViewMonth=nm;this.state.calSelectedDate=nm+'-01';this.renderMonthlyBoard();
+  },
+  nextMonth:function(){
+    var p=this.state.calViewMonth.split('-');var y=+p[0],m=+p[1]-1;m++;if(m>11){m=0;y++;}
+    var nm=y+'-'+String(m+1).padStart(2,'0');this.state.calViewMonth=nm;this.state.calSelectedDate=nm+'-01';this.renderMonthlyBoard();
+  },
+  resetMonth:function(){
+    var cm=this.getMonthKey(this.state.currentDate);
+    this.state.calViewMonth=cm;this.state.calSelectedDate=this.state.currentDate;this.renderMonthlyBoard();
+  },
+  addPlanForSelected:function(){
+    var sel=this.state.calSelectedDate||this.state.currentDate;
+    var m=this.metaDate(sel);
+    this.showAddWeeklyPlan(sel,m.wd,m.label);
+  },
+  metaDate:function(dk){
+    var pp=dk.split('-');var dd=new Date(+pp[0],+pp[1]-1,+pp[2]);
+    var wd=['周日','周一','周二','周三','周四','周五','周六'];
+    return {wd:wd[dd.getDay()],label:(dd.getMonth()+1)+'/'+dd.getDate()};
   },
   showAddWeeklyPlan:function(dateKey,weekday,label){
     var self=this;
@@ -1316,7 +1388,7 @@ var App={
       if(!self.state.data.work.weeklyPlan)self.state.data.work.weeklyPlan=[];
       self.state.data.work.weeklyPlan.push({id:Date.now(),dateKey:dateKey,weekday:weekday,label:label,content:content,done:false});
       self.saveData();
-      self.renderWeeklyPlan();
+      self.renderMonthlyBoard();
       self.showToast('已添加');
     });
   },
@@ -1331,7 +1403,7 @@ var App={
       if(!content){self.showToast('请填写计划内容');return;}
       it.content=content;
       self.saveData();
-      self.renderWeeklyPlan();
+      self.renderMonthlyBoard();
       self.showToast('已更新');
     });
   },
@@ -1339,7 +1411,8 @@ var App={
     var it=(this.state.data.work.weeklyPlan||[]).filter(function(x){return String(x.id)===String(id);})[0];
     if(!it)return;
     it.done=!it.done;
-    if(it.done)this.logHistory(it.dateKey, it.content, 'plan');
+    if(it.done)this.logHistory(it.dateKey, it.content, 'plan', 'plan:'+it.id);
+    else this.removeHistoryByRef('plan:'+it.id, it.dateKey);
     // keep the source today-todo in sync
     if(it.sourceTaskId){
       var tasks=this.state.data.tasks[this.state.currentDate]||[];
@@ -1348,7 +1421,7 @@ var App={
       }
     }
     this.saveData();
-    this.renderWeeklyPlan();
+    this.renderMonthlyBoard();
     this.renderToday();
     this.renderTasks();
   },
@@ -1357,7 +1430,7 @@ var App={
     this.confirmDialog('确定删除这条计划？',function(){
       self.state.data.work.weeklyPlan=self.state.data.work.weeklyPlan.filter(function(p){return String(p.id)!==String(id);});
       self.saveData();
-      self.renderWeeklyPlan();
+      self.renderMonthlyBoard();
     });
   },
 
@@ -1433,8 +1506,26 @@ var App={
     var now=new Date();
     var monthKey=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
     var ms=this.state.data.work.monthlySummaries?this.state.data.work.monthlySummaries[monthKey]:null;
-    if(ms){el.innerHTML='<pre style="font-size:12px;line-height:1.6;white-space:pre-wrap;">'+App.escape(ms.content)+'</pre>';}
-    else{el.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:16px;font-size:13px;">本月总结尚未生成</div>';}
+    if(ms&&!ms.dismissed){
+      el.innerHTML='<div class="ms-box"><pre class="ms-pre">'+App.escape(ms.content)+'</pre>'+
+        '<button class="ms-dismiss" onclick="App.dismissMonthlySummary()">✕ 收起总结</button></div>';
+    }else if(ms&&ms.dismissed){
+      el.innerHTML='<div class="ms-collapsed" onclick="App.expandMonthlySummary()">📊 本月总结已生成（点击展开查看）</div>';
+    }else{
+      el.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:16px;font-size:13px;">本月总结尚未生成</div>';
+    }
+  },
+  dismissMonthlySummary:function(){
+    var now=new Date();var monthKey=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    if(!this.state.data.work.monthlySummaries)this.state.data.work.monthlySummaries={};
+    if(!this.state.data.work.monthlySummaries[monthKey])this.state.data.work.monthlySummaries[monthKey]={};
+    this.state.data.work.monthlySummaries[monthKey].dismissed=true;
+    this.saveData();this.renderMonthlySummary();
+  },
+  expandMonthlySummary:function(){
+    var now=new Date();var monthKey=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    if(this.state.data.work.monthlySummaries&&this.state.data.work.monthlySummaries[monthKey])this.state.data.work.monthlySummaries[monthKey].dismissed=false;
+    this.saveData();this.renderMonthlySummary();
   },
   generateMonthlySummary:function(){
     var now=new Date();
@@ -1471,7 +1562,7 @@ var App={
     if(pending.length===0&&clients.length===0)content+='  （添加客户和进度后自动生成）\n';
 
     if(!this.state.data.work.monthlySummaries)this.state.data.work.monthlySummaries={};
-    this.state.data.work.monthlySummaries[monthKey]={content:content,generatedAt:new Date().toISOString()};
+    this.state.data.work.monthlySummaries[monthKey]={content:content,generatedAt:new Date().toISOString(),dismissed:false};
     this.saveData();
     this.renderMonthlySummary();
     this.showToast('月度总结已生成');
@@ -2051,14 +2142,22 @@ var App={
   dateKey:function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');},
 
   // ---- History & Archive ----
-  // Record every completed action so past weeks/months stay reviewable
-  logHistory:function(dateKey, text, kind){
+  // Record every completed action so past weeks/months stay reviewable.
+  // A `ref` links an entry to its source so un-completing removes the entry
+  // instead of leaving a duplicate behind.
+  logHistory:function(dateKey, text, kind, ref){
     if(!this.state.data.history)this.state.data.history={};
     if(!this.state.data.history[dateKey])this.state.data.history[dateKey]=[];
     this.state.data.history[dateKey].push({
-      text:text, kind:kind,
+      text:text, kind:kind, ref:ref||null,
       time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})
     });
+  },
+  removeHistoryByRef:function(ref, dateKey){
+    var h=this.state.data.history;
+    if(!h||!h[dateKey])return;
+    h[dateKey]=h[dateKey].filter(function(e){return e.ref!==ref;});
+    if(h[dateKey].length===0)delete h[dateKey];
   },
   getWeekStartKey:function(dateKeyStr){
     var p=dateKeyStr.split('-');var y=+p[0],m=+p[1]-1,dd=+p[2];
