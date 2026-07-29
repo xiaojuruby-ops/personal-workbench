@@ -228,6 +228,27 @@ body{padding-bottom:70px;}
 .progress-client{font-size:13px;font-weight:600;color:#2C3E50;}
 .progress-action{font-size:12px;color:#7F8C8D;margin-top:2px;line-height:1.4;}
 
+/* ===== Weekly Plan ===== */
+.week-day{padding:10px 0;border-bottom:1px solid #F0F4F8;}
+.week-day:last-child{border-bottom:none;}
+.week-day-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;cursor:pointer;}
+.week-day-name{font-size:13px;font-weight:600;color:#2C3E50;min-width:42px;}
+.week-day-date{font-size:11px;color:#95A5A6;}
+.week-day-add{margin-left:auto;font-size:18px;color:#5BA8D6;font-weight:700;padding:0 6px;}
+.week-day.is-today{background:linear-gradient(90deg,#EBF5FB,transparent);border-radius:8px;margin:0 -8px;padding:10px 8px;}
+.week-day.is-today .week-day-name{color:#5BA8D6;}
+.week-items{margin-top:6px;padding-left:50px;}
+.week-item{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;padding:5px 0;}
+.week-cb{width:18px;height:18px;border-radius:5px;border:2px solid #CBD5E0;cursor:pointer;flex-shrink:0;
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;background:#fff;font-size:11px;color:#fff;}
+.week-cb.done{background:#27AE60;border-color:#27AE60;}
+.week-text{flex:1;font-size:13px;line-height:1.4;word-break:break-word;}
+.week-text.done{text-decoration:line-through;color:#B0BEC5;}
+.week-edit{background:none;border:none;color:#5BA8D6;cursor:pointer;font-size:14px;padding:2px 5px;flex-shrink:0;}
+.week-del{background:none;border:none;color:#E74C3C;cursor:pointer;font-size:14px;padding:2px 5px;opacity:0.55;flex-shrink:0;}
+.week-del:active{opacity:1;}
+.week-empty{font-size:11px;color:#B0BEC5;padding:2px 0;}
+
 /* ===== Inspiration ===== */
 .inspiration-item{padding:12px;border-bottom:1px solid #F5F6F7;}
 .inspiration-item:last-child{border-bottom:none;}
@@ -457,6 +478,12 @@ body{padding-bottom:70px;}
     <div id="client-list"></div>
     <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="App.showAddClient()">+ 添加客户</button>
     <button class="btn btn-outline btn-sm" style="margin-top:10px;margin-left:6px;" onclick="App.showAddProgress()">+ 添加跟进记录</button>
+  </div>
+
+  <!-- 本周计划（按每天） -->
+  <div class="card">
+    <div class="section-header">📅 本周计划</div>
+    <div id="weekly-plan"></div>
   </div>
 
   <!-- Monthly Summary -->
@@ -731,7 +758,7 @@ var App={
       {id:'xiaohongshu',name:'小红书',handle:'小橘不懒惰🍊',platform:'小红书',icon:'🍊',totalFollowers:0},
       {id:'bilibili',name:'哔哩哔哩',handle:'小橘不懒惰',platform:'B站',icon:'📺',totalFollowers:0}
     ],hotTopics:{},topics:{},inspirations:[]};
-    if(!d.work)d.work={clients:[],progress:[],deals:[],monthlySummaries:{},salaryPlan:{income:0,fund:0,savings:0,other:0}};
+    if(!d.work)d.work={clients:[],progress:[],deals:[],weeklyPlan:[],monthlySummaries:{},salaryPlan:{income:0,fund:0,savings:0,other:0}};
     if(!d.growth)d.growth={finance:{notes:{},fundHotTopics:{}},reading:{books:[],chats:{}},knowledge:[]};
     if(!d.plan)d.plan={doneLog:{},fitness:{records:{}}};
     // Migration: keyClients -> clients
@@ -824,7 +851,7 @@ var App={
     document.querySelectorAll('.zone-tab').forEach(function(t){t.classList.remove('active');});
     var tabs=document.querySelectorAll('.zone-tab[data-zone="'+zone+'"]');
     if(tabs.length>0)tabs[0].classList.add('active');
-    if(zone==='work'){this.renderToday();this.renderClients();this.renderProgress();this.renderMonthlySummary();this.renderDeals();}
+    if(zone==='work'){this.renderToday();this.renderClients();this.renderProgress();this.renderWeeklyPlan();this.renderMonthlySummary();this.renderDeals();}
     if(zone==='media'){this.renderMedia();}
     if(zone==='growth'){this.renderGrowth();}
     if(zone==='plan'){this.renderPlan();}
@@ -838,6 +865,7 @@ var App={
     try{this.renderHabits();}catch(e){console.log('renderHabits error:',e.message);}
     try{this.renderClients();}catch(e){}
     try{this.renderProgress();}catch(e){}
+    try{this.renderWeeklyPlan();}catch(e){}
     try{this.renderMonthlySummary();}catch(e){}
     try{this.renderDeals();}catch(e){}
   },
@@ -1005,7 +1033,8 @@ var App={
             '<div class="timeline-dot"></div>'+
             '<div class="timeline-body"><div class="timeline-date">'+App.escape(p.date)+'</div><div class="timeline-action">'+App.escape(p.action)+'</div></div>'+
             '<span class="timeline-status '+tsCls+'">'+App.escape(p.status||'待跟进')+'</span>'+
-            '<button class="mini-btn del" style="margin-left:4px;font-size:10px;padding:2px 5px;" onclick="event.stopPropagation();App.deleteProgress('+p.id+')">✕</button>'+
+            '<button class="mini-btn" style="margin-left:4px;font-size:10px;padding:2px 5px;" onclick="event.stopPropagation();App.editProgress('+p.id+')">✎</button>'+
+            '<button class="mini-btn del" style="margin-left:2px;font-size:10px;padding:2px 5px;" onclick="event.stopPropagation();App.deleteProgress('+p.id+')">✕</button>'+
             '</div>';
         }
         timelineHtml+='</div>';
@@ -1129,10 +1158,132 @@ var App={
   deleteProgress:function(id){
     var self=this;
     this.confirmDialog('确定删除这条进度记录？',function(){
-      self.state.data.work.progress=self.state.data.work.progress.filter(function(p){return p.id!==id;});
+      self.state.data.work.progress=self.state.data.work.progress.filter(function(p){return String(p.id)!==String(id);});
       self.saveData();
       self.renderProgress();
       self.renderClients();
+    });
+  },
+  editProgress:function(id){
+    var self=this;
+    var p=(this.state.data.work.progress||[]).filter(function(x){return String(x.id)===String(id);})[0];
+    if(!p){this.showToast('进度不存在');return;}
+    var clients=this.state.data.work.clients||[];
+    var clientOptions=[];
+    for(var i=0;i<clients.length;i++){clientOptions.push({value:String(clients[i].id),label:clients[i].name});}
+    if(clientOptions.length===0)clientOptions.push({value:p.clientId,label:p.clientName||'(未知)'});
+    this.openModal('✏️ 编辑跟进进度',[
+      {key:'clientId',label:'客户',type:'select',value:String(p.clientId),options:clientOptions},
+      {key:'date',label:'日期',value:p.date||this.state.currentDate,placeholder:'如：7月27日'},
+      {key:'action',label:'跟进动作',value:p.action||'',placeholder:'如：发报价 / 做PI / 寄样品'},
+      {key:'status',label:'状态',type:'select',value:p.status||'待跟进',options:['待跟进','进行中','已完成']}
+    ],function(vals){
+      var cid=vals.clientId;
+      var c=clients.filter(function(x){return String(x.id)===cid;})[0];
+      var clientName=c?c.name:p.clientName;
+      var date=vals.date?vals.date.trim():self.state.currentDate;
+      var action=vals.action?vals.action.trim():'';
+      if(!action){self.showToast('请填写跟进动作');return;}
+      p.clientId=cid;p.clientName=clientName;p.date=date;p.action=action;p.status=vals.status;
+      self.saveData();
+      self.renderProgress();
+      self.renderClients();
+      self.showToast('进度已更新');
+    });
+  },
+
+  // ---- Weekly Plan (by day) ----
+  getWeekDates:function(){
+    var now=new Date();
+    var day=now.getDay(); // 0=Sun,1=Mon...
+    var diff=(day===0)?-6:(1-day); // make Monday first
+    var monday=new Date(now);
+    monday.setDate(now.getDate()+diff);
+    var wd=['周日','周一','周二','周三','周四','周五','周六'];
+    var arr=[];
+    for(var i=0;i<7;i++){
+      var d=new Date(monday);
+      d.setDate(monday.getDate()+i);
+      arr.push({key:this.dateKey(d),weekday:wd[d.getDay()],label:(d.getMonth()+1)+'/'+d.getDate(),isToday:this.dateKey(d)===this.state.currentDate});
+    }
+    return arr;
+  },
+  renderWeeklyPlan:function(){
+    var el=document.getElementById('weekly-plan');
+    if(!el)return;
+    var self=this;
+    var weeks=this.getWeekDates();
+    var plan=this.state.data.work.weeklyPlan||[];
+    var todayKey=this.state.currentDate;
+    var html='';
+    for(var i=0;i<weeks.length;i++){var w=weeks[i];
+      var dayItems=plan.filter(function(p){return p.dateKey===w.key;});
+      var itemsHtml='';
+      if(dayItems.length>0){
+        itemsHtml='<div class="week-items">';
+        for(var j=0;j<dayItems.length;j++){var it=dayItems[j];
+          itemsHtml+='<div class="week-item">'+
+            '<div class="week-cb'+(it.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+it.id+')">'+(it.done?'✓':'')+'</div>'+
+            '<div class="week-text'+(it.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+it.id+')">'+App.escape(it.content)+'</div>'+
+            '<button class="week-edit" onclick="App.editWeeklyPlan('+it.id+')">✎</button>'+
+            '<button class="week-del" onclick="App.deleteWeeklyPlan('+it.id+')">✕</button>'+
+            '</div>';
+        }
+        itemsHtml+='</div>';
+      }else{
+        itemsHtml='<div class="week-items"><div class="week-empty">—</div></div>';
+      }
+      html+='<div class="week-day'+(w.isToday?' is-today':'')+'">'+
+        '<div class="week-day-head" onclick="App.showAddWeeklyPlan(\''+w.key+'\',\''+w.weekday+'\',\''+w.label+'\')">'+
+        '<span class="week-day-name">'+w.weekday+'</span>'+
+        '<span class="week-day-date">'+w.label+'</span>'+
+        '<span class="week-day-add">+</span>'+
+        '</div>'+itemsHtml+'</div>';
+    }
+    el.innerHTML=html;
+  },
+  showAddWeeklyPlan:function(dateKey,weekday,label){
+    var self=this;
+    this.openModal('➕ 添加'+weekday+'('+label+')计划',[
+      {key:'content',label:'计划内容',value:'',placeholder:'如：给以色列客户发PI / 跟进样品物流'}
+    ],function(vals){
+      var content=vals.content?vals.content.trim():'';
+      if(!content){self.showToast('请填写计划内容');return;}
+      if(!self.state.data.work.weeklyPlan)self.state.data.work.weeklyPlan=[];
+      self.state.data.work.weeklyPlan.push({id:Date.now(),dateKey:dateKey,weekday:weekday,label:label,content:content,done:false});
+      self.saveData();
+      self.renderWeeklyPlan();
+      self.showToast('已添加');
+    });
+  },
+  editWeeklyPlan:function(id){
+    var self=this;
+    var it=(this.state.data.work.weeklyPlan||[]).filter(function(x){return String(x.id)===String(id);})[0];
+    if(!it){this.showToast('计划不存在');return;}
+    this.openModal('✏️ 编辑计划',[
+      {key:'content',label:'计划内容',value:it.content||'',placeholder:'如：给以色列客户发PI'}
+    ],function(vals){
+      var content=vals.content?vals.content.trim():'';
+      if(!content){self.showToast('请填写计划内容');return;}
+      it.content=content;
+      self.saveData();
+      self.renderWeeklyPlan();
+      self.showToast('已更新');
+    });
+  },
+  toggleWeeklyPlan:function(id){
+    var it=(this.state.data.work.weeklyPlan||[]).filter(function(x){return String(x.id)===String(id);})[0];
+    if(!it)return;
+    it.done=!it.done;
+    this.saveData();
+    this.renderWeeklyPlan();
+  },
+  deleteWeeklyPlan:function(id){
+    var self=this;
+    this.confirmDialog('确定删除这条计划？',function(){
+      self.state.data.work.weeklyPlan=self.state.data.work.weeklyPlan.filter(function(p){return String(p.id)!==String(id);});
+      self.saveData();
+      self.renderWeeklyPlan();
     });
   },
 
