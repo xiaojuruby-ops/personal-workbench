@@ -228,26 +228,40 @@ body{padding-bottom:70px;}
 .progress-client{font-size:13px;font-weight:600;color:#2C3E50;}
 .progress-action{font-size:12px;color:#7F8C8D;margin-top:2px;line-height:1.4;}
 
-/* ===== Weekly Plan ===== */
-.week-day{padding:10px 0;border-bottom:1px solid #F0F4F8;}
-.week-day:last-child{border-bottom:none;}
-.week-day-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;cursor:pointer;}
-.week-day-name{font-size:13px;font-weight:600;color:#2C3E50;min-width:42px;}
-.week-day-date{font-size:11px;color:#95A5A6;}
-.week-day-add{margin-left:auto;font-size:18px;color:#5BA8D6;font-weight:700;padding:0 6px;}
-.week-day.is-today{background:linear-gradient(90deg,#EBF5FB,transparent);border-radius:8px;margin:0 -8px;padding:10px 8px;}
+/* ===== Weekly Plan (horizontal board) ===== */
+.weekly-board{display:-webkit-flex;display:flex;-webkit-overflow-scrolling:touch;overflow-x:auto;gap:8px;padding:4px 2px 8px;}
+.week-day{flex:0 0 auto;width:118px;background:#F8FAFC;border-radius:10px;padding:8px;min-height:84px;
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
+.week-day-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:4px;cursor:pointer;margin-bottom:4px;}
+.week-day-name{font-size:13px;font-weight:600;color:#2C3E50;}
+.week-day-date{font-size:10px;color:#95A5A6;}
+.week-day-add{margin-left:auto;font-size:16px;color:#5BA8D6;font-weight:700;line-height:1;}
+.week-day.is-today{background:#EBF5FB;box-shadow:0 0 0 2px #5BA8D6 inset;}
 .week-day.is-today .week-day-name{color:#5BA8D6;}
-.week-items{margin-top:6px;padding-left:50px;}
-.week-item{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;padding:5px 0;}
-.week-cb{width:18px;height:18px;border-radius:5px;border:2px solid #CBD5E0;cursor:pointer;flex-shrink:0;
-  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;background:#fff;font-size:11px;color:#fff;}
+.week-items{margin-top:2px;padding-left:0;-webkit-flex:1;flex:1;}
+.week-item{display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start;gap:5px;padding:5px 0;border-top:1px solid #EDF1F5;}
+.week-item:first-child{border-top:none;}
+.week-cb{width:16px;height:16px;border-radius:4px;border:2px solid #CBD5E0;cursor:pointer;flex-shrink:0;margin-top:1px;
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;background:#fff;font-size:10px;color:#fff;}
 .week-cb.done{background:#27AE60;border-color:#27AE60;}
-.week-text{flex:1;font-size:13px;line-height:1.4;word-break:break-word;}
+.week-text{flex:1;font-size:12px;line-height:1.35;word-break:break-word;}
 .week-text.done{text-decoration:line-through;color:#B0BEC5;}
-.week-edit{background:none;border:none;color:#5BA8D6;cursor:pointer;font-size:14px;padding:2px 5px;flex-shrink:0;}
-.week-del{background:none;border:none;color:#E74C3C;cursor:pointer;font-size:14px;padding:2px 5px;opacity:0.55;flex-shrink:0;}
+.week-edit{background:none;border:none;color:#5BA8D6;cursor:pointer;font-size:13px;padding:0 3px;flex-shrink:0;}
+.week-del{background:none;border:none;color:#E74C3C;cursor:pointer;font-size:13px;padding:0 3px;opacity:0.55;flex-shrink:0;}
 .week-del:active{opacity:1;}
 .week-empty{font-size:11px;color:#B0BEC5;padding:2px 0;}
+
+/* ===== History ===== */
+.hist-tabs{display:-webkit-flex;display:flex;gap:8px;margin-bottom:8px;}
+.hist-tab{font-size:12px;padding:5px 14px;border-radius:14px;background:#F0F4F8;color:#7F8C8D;cursor:pointer;}
+.hist-tab.active{background:#5BA8D6;color:#fff;}
+.hist-group{margin-bottom:12px;}
+.hist-group-head{font-size:13px;font-weight:600;color:#2C3E50;margin-bottom:6px;display:-webkit-flex;display:flex;-webkit-align-items:center;gap:8px;}
+.hist-count{font-size:11px;font-weight:400;color:#95A5A6;background:#F0F4F8;border-radius:10px;padding:1px 8px;}
+.hist-item{display:-webkit-flex;display:flex;-webkit-align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #F5F6F7;font-size:12px;}
+.hist-kind{flex-shrink:0;}
+.hist-text{flex:1;color:#34495E;word-break:break-word;line-height:1.4;}
+.hist-date{flex-shrink:0;font-size:10px;color:#B0BEC5;}
 
 /* ===== Inspiration ===== */
 .inspiration-item{padding:12px;border-bottom:1px solid #F5F6F7;}
@@ -500,6 +514,16 @@ body{padding-bottom:70px;}
     <button class="btn btn-success btn-sm" style="margin-top:10px;" onclick="App.showAddDeal()">+ 记录成交</button>
   </div>
 
+  <!-- History (what I did before) -->
+  <div class="card">
+    <div class="section-header">📚 历史记录 <span style="font-size:11px;font-weight:400;color:#95A5A6;">之前做了啥</span></div>
+    <div class="hist-tabs">
+      <div class="hist-tab active" data-mode="week" onclick="App.setHistoryMode('week')">按周</div>
+      <div class="hist-tab" data-mode="month" onclick="App.setHistoryMode('month')">按月</div>
+    </div>
+    <div id="history-view"></div>
+  </div>
+
 </div><!-- end zone-work -->
 
 <!-- ============================================================ -->
@@ -722,6 +746,7 @@ var App={
   init:function(){
     this.state.currentDate=this.dateKey(new Date());
     this.loadLocal();
+    this.archiveIfNeeded();
 
     var hashWs='';
     if(location.hash&&location.hash.indexOf('ws=')>=0){
@@ -761,6 +786,10 @@ var App={
     if(!d.work)d.work={clients:[],progress:[],deals:[],weeklyPlan:[],monthlySummaries:{},salaryPlan:{income:0,fund:0,savings:0,other:0}};
     if(!d.growth)d.growth={finance:{notes:{},fundHotTopics:{}},reading:{books:[],chats:{}},knowledge:[]};
     if(!d.plan)d.plan={doneLog:{},fitness:{records:{}}};
+    if(!d.history)d.history={};
+    if(!d.work.weeklyArchive)d.work.weeklyArchive={};
+    if(d.work.lastArchivedWeek===undefined)d.work.lastArchivedWeek=null;
+    if(d.work.lastArchivedMonth===undefined)d.work.lastArchivedMonth=null;
     // Migration: keyClients -> clients
     if(d.work.keyClients&&d.work.keyClients.length>0&&(!d.work.clients||d.work.clients.length===0)){
       d.work.clients=d.work.keyClients;
@@ -851,7 +880,7 @@ var App={
     document.querySelectorAll('.zone-tab').forEach(function(t){t.classList.remove('active');});
     var tabs=document.querySelectorAll('.zone-tab[data-zone="'+zone+'"]');
     if(tabs.length>0)tabs[0].classList.add('active');
-    if(zone==='work'){this.renderToday();this.renderClients();this.renderProgress();this.renderWeeklyPlan();this.renderMonthlySummary();this.renderDeals();}
+    if(zone==='work'){this.renderToday();this.renderClients();this.renderProgress();this.renderWeeklyPlan();this.renderMonthlySummary();this.renderDeals();this.renderHistory();}
     if(zone==='media'){this.renderMedia();}
     if(zone==='growth'){this.renderGrowth();}
     if(zone==='plan'){this.renderPlan();}
@@ -868,6 +897,7 @@ var App={
     try{this.renderWeeklyPlan();}catch(e){}
     try{this.renderMonthlySummary();}catch(e){}
     try{this.renderDeals();}catch(e){}
+    try{this.renderHistory();}catch(e){}
   },
 
   // ================================================================
@@ -962,11 +992,37 @@ var App={
     var key=this.state.currentDate;
     var tasks=this.state.data.tasks[key]||[];
     for(var i=0;i<tasks.length;i++){
-      if(tasks[i].id===id){tasks[i].done=!tasks[i].done;break;}
+      if(tasks[i].id===id){
+        tasks[i].done=!tasks[i].done;
+        if(tasks[i].done){
+          this.addTaskToWeeklyPlan(tasks[i].text, tasks[i].id);
+          this.logHistory(key, tasks[i].text, 'task');
+        }else{
+          // remove the auto-linked weekly-plan entry
+          if(this.state.data.work.weeklyPlan){
+            this.state.data.work.weeklyPlan=this.state.data.work.weeklyPlan.filter(function(p){
+              return String(p.sourceTaskId)!==String(tasks[i].id);
+            });
+          }
+        }
+        break;
+      }
     }
     this.saveData();
     this.renderToday();
     this.renderTasks();
+    this.renderWeeklyPlan();
+  },
+  // Mirror a completed today-todo into today's column of the weekly board
+  addTaskToWeeklyPlan:function(text, taskId){
+    if(!this.state.data.work.weeklyPlan)this.state.data.work.weeklyPlan=[];
+    var plan=this.state.data.work.weeklyPlan;
+    for(var i=0;i<plan.length;i++){if(String(plan[i].sourceTaskId)===String(taskId))return;}
+    var weeks=this.getWeekDates();
+    var today=null;
+    for(var w=0;w<weeks.length;w++){if(weeks[w].isToday)today=weeks[w];}
+    if(!today)return;
+    plan.push({id:Date.now(),dateKey:today.key,weekday:today.weekday,label:today.label,content:text,done:true,sourceTaskId:taskId});
   },
   deleteTask:function(id){
     var key=this.state.currentDate;
@@ -984,7 +1040,7 @@ var App={
     if(!h||!h.name)return;
     var tk=this.state.currentDate;
     if(!h.records)h.records={};
-    if(h.records[tk]){delete h.records[tk];}else{h.records[tk]=true;this.showToast('打卡成功！💪');}
+    if(h.records[tk]){delete h.records[tk];}else{h.records[tk]=true;this.showToast('打卡成功！💪');this.logHistory(tk, h.name+' 打卡', 'habit');}
     // Update streak
     var streak=0;
     var d=new Date();
@@ -1240,7 +1296,7 @@ var App={
         '<span class="week-day-add">+</span>'+
         '</div>'+itemsHtml+'</div>';
     }
-    el.innerHTML=html;
+    el.innerHTML='<div class="weekly-board">'+html+'</div>';
   },
   showAddWeeklyPlan:function(dateKey,weekday,label){
     var self=this;
@@ -1275,8 +1331,18 @@ var App={
     var it=(this.state.data.work.weeklyPlan||[]).filter(function(x){return String(x.id)===String(id);})[0];
     if(!it)return;
     it.done=!it.done;
+    if(it.done)this.logHistory(it.dateKey, it.content, 'plan');
+    // keep the source today-todo in sync
+    if(it.sourceTaskId){
+      var tasks=this.state.data.tasks[this.state.currentDate]||[];
+      for(var i=0;i<tasks.length;i++){
+        if(String(tasks[i].id)===String(it.sourceTaskId)){tasks[i].done=it.done;break;}
+      }
+    }
     this.saveData();
     this.renderWeeklyPlan();
+    this.renderToday();
+    this.renderTasks();
   },
   deleteWeeklyPlan:function(id){
     var self=this;
@@ -1285,6 +1351,71 @@ var App={
       self.saveData();
       self.renderWeeklyPlan();
     });
+  },
+
+  // ---- History View (what I did before, grouped by week / month) ----
+  setHistoryMode:function(mode){
+    this.state.historyMode=mode;
+    var tabs=document.querySelectorAll('.hist-tab');
+    for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active');}
+    var matched=document.querySelectorAll('.hist-tab[data-mode="'+mode+'"]');
+    for(var j=0;j<matched.length;j++){matched[j].classList.add('active');}
+    this.renderHistory();
+  },
+  kindIcon:function(kind){
+    return kind==='task'?'📋':kind==='plan'?'📅':kind==='habit'?'🎯':kind==='deal'?'🤝':'✅';
+  },
+  renderHistory:function(){
+    var el=document.getElementById('history-view');
+    if(!el)return;
+    var mode=this.state.historyMode||'week';
+    var hist=this.state.data.history||{};
+    var keys=[];
+    for(var k in hist){if(hist[k]&&hist[k].length>0)keys.push(k);}
+    if(keys.length===0){
+      el.innerHTML='<div style="text-align:center;color:#B0BEC5;padding:18px;font-size:13px;line-height:1.6;">还没有完成的记录<br>勾选完成的待办 / 计划 / 习惯打卡<br>会自动记录到这里 📚</div>';
+      return;
+    }
+    var html='';
+    if(mode==='week'){
+      var groups={};
+      for(var i=0;i<keys.length;i++){
+        var wk=this.getWeekStartKey(keys[i]);
+        if(!groups[wk])groups[wk]=[];
+        for(var a=0;a<hist[keys[i]].length;a++){groups[wk].push(hist[keys[i]][a]);groups[wk][groups[wk].length-1].date=keys[i];}
+      }
+      var wkKeys=Object.keys(groups).sort(function(x,y){return x<y?1:-1;});
+      for(var w=0;w<wkKeys.length;w++){
+        var items=groups[wkKeys[w]];
+        html+='<div class="hist-group"><div class="hist-group-head">📅 '+this.getWeekRangeLabel(wkKeys[w])+' <span class="hist-count">'+items.length+' 项</span></div>';
+        for(var m=0;m<items.length;m++){
+          html+='<div class="hist-item"><span class="hist-kind">'+this.kindIcon(items[m].kind)+'</span>'+
+            '<span class="hist-text">'+App.escape(items[m].text)+'</span>'+
+            '<span class="hist-date">'+(items[m].date.slice(5))+' '+items[m].time+'</span></div>';
+        }
+        html+='</div>';
+      }
+    }else{
+      var mgroups={};
+      for(var i2=0;i2<keys.length;i2++){
+        var mk=this.getMonthKey(keys[i2]);
+        if(!mgroups[mk])mgroups[mk]=[];
+        for(var b=0;b<hist[keys[i2]].length;b++){mgroups[mk].push(hist[keys[i2]][b]);mgroups[mk][mgroups[mk].length-1].date=keys[i2];}
+      }
+      var mkKeys=Object.keys(mgroups).sort(function(x,y){return x<y?1:-1;});
+      for(var mm=0;mm<mkKeys.length;mm++){
+        var mitems=mgroups[mkKeys[mm]];
+        var label=mkKeys[mm].split('-');
+        html+='<div class="hist-group"><div class="hist-group-head">🗓️ '+label[0]+'年'+parseInt(label[1],10)+'月 <span class="hist-count">'+mitems.length+' 项</span></div>';
+        for(var n=0;n<mitems.length;n++){
+          html+='<div class="hist-item"><span class="hist-kind">'+this.kindIcon(mitems[n].kind)+'</span>'+
+            '<span class="hist-text">'+App.escape(mitems[n].text)+'</span>'+
+            '<span class="hist-date">'+(mitems[n].date.slice(5))+' '+mitems[n].time+'</span></div>';
+        }
+        html+='</div>';
+      }
+    }
+    el.innerHTML=html;
   },
 
   // ---- Monthly Summary & Next Month Plan ----
@@ -1365,6 +1496,7 @@ var App={
       var date=(vals.date&&vals.date.trim())?vals.date.trim().replace(/-/g,'/'):self.state.currentDate.replace(/-/g,'/');
       if(!self.state.data.work.deals)self.state.data.work.deals=[];
       self.state.data.work.deals.push({id:Date.now(),client:client,product:vals.product.trim(),amount:vals.amount.trim(),date:date,addedAt:new Date().toISOString()});
+      self.logHistory(self.state.currentDate, '成交：'+client+(vals.product.trim()?(' · '+vals.product.trim()):''), 'deal');
       self.saveData();
       self.renderDeals();
       self.showToast('🎉 成交记录已保存！');
@@ -1909,6 +2041,76 @@ var App={
   // UTILITIES
   // ================================================================
   dateKey:function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');},
+
+  // ---- History & Archive ----
+  // Record every completed action so past weeks/months stay reviewable
+  logHistory:function(dateKey, text, kind){
+    if(!this.state.data.history)this.state.data.history={};
+    if(!this.state.data.history[dateKey])this.state.data.history[dateKey]=[];
+    this.state.data.history[dateKey].push({
+      text:text, kind:kind,
+      time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})
+    });
+  },
+  getWeekStartKey:function(dateKeyStr){
+    var p=dateKeyStr.split('-');var y=+p[0],m=+p[1]-1,dd=+p[2];
+    var d=new Date(y,m,dd);
+    var day=d.getDay();var diff=(day===0)?-6:(1-day);
+    var mon=new Date(d);mon.setDate(d.getDate()+diff);
+    return this.dateKey(mon);
+  },
+  getMonthKey:function(dateKeyStr){return dateKeyStr.slice(0,7);},
+  getWeekRangeLabel:function(weekStartKey){
+    var p=weekStartKey.split('-');var y=+p[0],m=+p[1]-1,dd=+p[2];
+    var mon=new Date(y,m,dd);var sun=new Date(mon);sun.setDate(mon.getDate()+6);
+    return (mon.getMonth()+1)+'/'+mon.getDate()+'–'+(sun.getMonth()+1)+'/'+sun.getDate();
+  },
+  // At app start, if the week or month has rolled over, archive the finished period
+  archiveIfNeeded:function(){
+    var d=this.state.data;
+    if(!d.work)d.work={};
+    var todayKey=this.state.currentDate;
+    var curWeek=this.getWeekStartKey(todayKey);
+    var curMonth=this.getMonthKey(todayKey);
+    // ---- Week rollover ----
+    if(d.work.lastArchivedWeek===null||d.work.lastArchivedWeek===undefined){
+      d.work.lastArchivedWeek=curWeek;
+    }else if(d.work.lastArchivedWeek!==curWeek){
+      var oldWeek=d.work.lastArchivedWeek;
+      if(!d.work.weeklyArchive)d.work.weeklyArchive={};
+      if(!d.work.weeklyArchive[oldWeek]){
+        d.work.weeklyArchive[oldWeek]={
+          weekStart:oldWeek,
+          weekLabel:this.getWeekRangeLabel(oldWeek),
+          planItems:(d.work.weeklyPlan||[]).map(function(p){
+            return {dateKey:p.dateKey,weekday:p.weekday,label:p.label,content:p.content,done:!!p.done};
+          })
+        };
+      }
+      d.work.weeklyPlan=[]; // reset board for the new week
+      d.work.lastArchivedWeek=curWeek;
+    }
+    // ---- Month rollover ----
+    if(d.work.lastArchivedMonth===null||d.work.lastArchivedMonth===undefined){
+      d.work.lastArchivedMonth=curMonth;
+    }else if(d.work.lastArchivedMonth!==curMonth){
+      var oldMonth=d.work.lastArchivedMonth;
+      if(!d.work.monthlyArchive)d.work.monthlyArchive={};
+      if(!d.work.monthlyArchive[oldMonth]){
+        var entries=[];var hist=d.history||{};
+        for(var k in hist){
+          if(this.getMonthKey(k)===oldMonth){
+            for(var i=0;i<hist[k].length;i++){
+              entries.push({date:k,text:hist[k][i].text,kind:hist[k][i].kind,time:hist[k][i].time});
+            }
+          }
+        }
+        d.work.monthlyArchive[oldMonth]={month:oldMonth,count:entries.length,entries:entries};
+      }
+      d.work.lastArchivedMonth=curMonth;
+    }
+    this.saveData();
+  },
   formatNum:function(n){if(typeof n!=='number'||isNaN(n))return n||'-';if(n>=10000)return(n/10000).toFixed(1)+'w';if(n>=1000)return(n/1000).toFixed(1)+'k';return String(n);},
   escape:function(str){var d=document.createElement('div');d.textContent=str;return d.innerHTML;},
   generateId:function(){return Math.random().toString(36).substring(2,10)+Date.now().toString(36);},
