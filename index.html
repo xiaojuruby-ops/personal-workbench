@@ -229,27 +229,34 @@ body{padding-bottom:70px;}
 .progress-action{font-size:12px;color:#7F8C8D;margin-top:2px;line-height:1.4;}
 
 /* ===== Weekly Plan (horizontal board) ===== */
-.weekly-board{display:-webkit-flex;display:flex;-webkit-overflow-scrolling:touch;overflow-x:auto;gap:8px;padding:4px 2px 8px;}
-.week-day{flex:0 0 auto;width:118px;background:#F8FAFC;border-radius:10px;padding:8px;min-height:84px;
-  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
-.week-day-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:4px;cursor:pointer;margin-bottom:4px;}
-.week-day-name{font-size:13px;font-weight:600;color:#2C3E50;}
-.week-day-date{font-size:10px;color:#95A5A6;}
-.week-day-add{margin-left:auto;font-size:16px;color:#5BA8D6;font-weight:700;line-height:1;}
-.week-day.is-today{background:#EBF5FB;box-shadow:0 0 0 2px #5BA8D6 inset;}
-.week-day.is-today .week-day-name{color:#5BA8D6;}
-.week-items{margin-top:2px;padding-left:0;-webkit-flex:1;flex:1;}
-.week-item{display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start;gap:5px;padding:5px 0;border-top:1px solid #EDF1F5;}
-.week-item:first-child{border-top:none;}
-.week-cb{width:16px;height:16px;border-radius:4px;border:2px solid #CBD5E0;cursor:pointer;flex-shrink:0;margin-top:1px;
-  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;background:#fff;font-size:10px;color:#fff;}
+.weekly-board{display:-webkit-flex;display:flex;-webkit-overflow-scrolling:touch;overflow-x:auto;gap:10px;padding:4px 2px 12px;
+  scrollbar-width:none;-ms-overflow-style:none;}
+.weekly-board::-webkit-scrollbar{display:none;}
+.week-day{flex:0 0 auto;width:148px;background:#F8FAFC;border-radius:12px;padding:10px 9px;min-height:72px;
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.week-day-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:5px;cursor:pointer;margin-bottom:6px;}
+.week-day-name{font-size:14px;font-weight:700;color:#2C3E50;letter-spacing:0.5px;}
+.week-day-date{font-size:11px;color:#A0AEC0;font-weight:500;}
+.week-day-add{margin-left:auto;font-size:18px;color:#5BA8D6;line-height:1;width:22px;text-align:center;}
+.week-day.is-today{background:linear-gradient(180deg,#EBF5FB,#F0F8FF);box-shadow:0 0 0 2px #5BA8D6,0 2px 8px rgba(91,168,214,0.12);}
+.week-day.is-today .week-day-name{color:#2980B9;}
+.week-items{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:3px;}
+.week-item{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:6px;padding:7px 5px;background:#fff;border-radius:8px;
+  box-shadow:0 1px 2px rgba(0,0,0,0.03);position:relative;}
+.week-cb{width:17px;height:17px;border-radius:5px;border:2px solid #CBD5E0;cursor:pointer;flex-shrink:0;
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;background:#F7FAFC;font-size:11px;color:#fff;}
 .week-cb.done{background:#27AE60;border-color:#27AE60;}
-.week-text{flex:1;font-size:12px;line-height:1.35;word-break:break-word;}
+.week-text{flex:1;font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
 .week-text.done{text-decoration:line-through;color:#B0BEC5;}
-.week-edit{background:none;border:none;color:#5BA8D6;cursor:pointer;font-size:13px;padding:0 3px;flex-shrink:0;}
-.week-del{background:none;border:none;color:#E74C3C;cursor:pointer;font-size:13px;padding:0 3px;opacity:0.55;flex-shrink:0;}
+.week-actions{position:absolute;top:3px;right:3px;display:-webkit-flex;display:flex;gap:1px;opacity:0;
+  transition:opacity .15s;}
+.week-item:hover .week-actions,.week-item:focus-within .week-actions{opacity:1;}
+.week-edit{background:none;border:none;color:#5BA8D6;cursor:pointer;font-size:12px;padding:1px 2px;flex-shrink:0;line-height:1;}
+.week-del{background:none;border:none;color:#E74C3C;cursor:pointer;font-size:12px;padding:1px 2px;flex-shrink:0;opacity:0.45;}
 .week-del:active{opacity:1;}
-.week-empty{font-size:11px;color:#B0BEC5;padding:2px 0;}
+.week-empty{text-align:center;color:#D0D7DE;font-size:12px;padding:10px 0 4px;letter-spacing:1px;}
+.week-count{font-size:10px;color:#A0AEC0;text-align:center;margin-top:4px;}
 
 /* ===== History ===== */
 .hist-tabs{display:-webkit-flex;display:flex;gap:8px;margin-bottom:8px;}
@@ -1274,15 +1281,15 @@ var App={
     var html='';
     for(var i=0;i<weeks.length;i++){var w=weeks[i];
       var dayItems=plan.filter(function(p){return p.dateKey===w.key;});
+      var doneCount=0;
       var itemsHtml='';
       if(dayItems.length>0){
         itemsHtml='<div class="week-items">';
-        for(var j=0;j<dayItems.length;j++){var it=dayItems[j];
+        for(var j=0;j<dayItems.length;j++){var it=dayItems[j];if(it.done)doneCount++;
           itemsHtml+='<div class="week-item">'+
             '<div class="week-cb'+(it.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+it.id+')">'+(it.done?'✓':'')+'</div>'+
-            '<div class="week-text'+(it.done?' done':'')+'" onclick="App.toggleWeeklyPlan('+it.id+')">'+App.escape(it.content)+'</div>'+
-            '<button class="week-edit" onclick="App.editWeeklyPlan('+it.id+')">✎</button>'+
-            '<button class="week-del" onclick="App.deleteWeeklyPlan('+it.id+')">✕</button>'+
+            '<div class="week-text'+(it.done?' done':'')+'" title="'+App.escape(it.content)+'" onclick="App.toggleWeeklyPlan('+it.id+')">'+App.escape(it.content)+'</div>'+
+            '<span class="week-actions"><button class="week-edit" onclick="event.stopPropagation();App.editWeeklyPlan('+it.id+')">✎</button><button class="week-del" onclick="event.stopPropagation();App.deleteWeeklyPlan('+it.id+')">✕</button></span>'+
             '</div>';
         }
         itemsHtml+='</div>';
@@ -1294,7 +1301,8 @@ var App={
         '<span class="week-day-name">'+w.weekday+'</span>'+
         '<span class="week-day-date">'+w.label+'</span>'+
         '<span class="week-day-add">+</span>'+
-        '</div>'+itemsHtml+'</div>';
+        '</div>'+itemsHtml+
+        (dayItems.length>0?'<div class="week-count">'+doneCount+'/'+dayItems.length+'</div>':'')+'</div>';
     }
     el.innerHTML='<div class="weekly-board">'+html+'</div>';
   },
